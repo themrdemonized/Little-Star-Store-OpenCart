@@ -1,0 +1,50 @@
+<footer>
+  <div class="footer-wrapper">
+    <div class="container">
+      <div class="footer-menu flex-container flex-justify flex-list mobile-block">
+        <div class="logo">
+          {% if logo_footer %}
+            {% if home == og_url %}
+              <img src="{{ logo_footer }}" title="{{ name }}" alt="{{ name }}"/>
+            {% else %}
+              <a href="{{ home }}"><img src="{{ logo_footer }}" title="{{ name }}" alt="{{ name }}"/></a>
+            {% endif %}
+          {% elseif logo %}
+            {% if home == og_url %}
+              <img src="{{ logo }}" title="{{ name }}" alt="{{ name }}"/>
+            {% else %}
+              <a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}"/></a>
+            {% endif %}
+          {% else %}
+            <h1><a href="{{ home }}">{{ name }}</a></h1>
+          {% endif %}
+        </div>
+        <ul class="list-unstyled">
+          <li><h3>Помощь</h3></li>
+          <li><a class="caption" href="policy">Политика конфиденциальности</a></li>
+          <li><a class="caption" href="delivery">Доставка и оплата</a></li>
+          <li><a class="caption" href="returns">Обмен и возврат</a></li>
+        </ul>
+        <ul class="list-unstyled">
+          <li><h3>Покупателям</h3></li>
+          <li><a class="caption" href="sizes">Таблица размеров</a></li>
+          <li><a class="caption" href="service">Сертификаты и уход</a></li>
+        </ul>
+        <ul class="list-unstyled">
+          <li><h3>Оставайтесь на связи</h3></li>
+          <li><p><a target="_blank" rel="noopener noreferrer" href="https://wa.me/79145441600">{{ telephone }}</a> <span class="caption text-medium-d">({{ open }})</span></p></li>
+          <li><a class="caption" href="contacts">Адреса магазинов в г. Хабаровск</a></li>
+        </ul>
+      </div>
+      <hr>
+      <div class="flex-container flex-center flex-justify item-title">
+        <p class="text-medium-d caption">© {{ year }} {{ store_name }}</p>
+        <a class="text-medium-d caption" href="https://4ait.ru" target="_blank" rel="noopener noreferrer">Разработка 4А</a>
+      </div>
+    </div>
+  </div>
+</footer>
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+</body></html>

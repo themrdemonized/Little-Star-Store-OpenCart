@@ -1,0 +1,42 @@
+<div class="swiper-viewport category-featured">
+  <h3 class="center header-1">{{ heading_title }}</h3>
+  <div class="row">
+    <div class="swiper-container" {% if module %}id="featured_{{ module }}"{% endif %}>
+      <div class="swiper-wrapper">
+        {% for product in products %}
+          <div class="swiper-slide">
+            {% include 'default/template/common/product-thumb.twig' with {'home_layout': true} %}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+</div>
+{% if module %}
+<script>
+  var featured_{{ module }} = new Swiper('#featured_{{ module }}', {
+    spaceBetween: 3.5,
+    slidesPerView: 2,
+    autoHeight: true,
+    slidesOffsetAfter: 32,
+    breakpoints: {
+      // when window width is >= 768px
+      768: {
+        spaceBetween: 6,
+        slidesPerView: 3.5,
+      },
+      992: {
+        spaceBetween: 6,
+        slidesPerView: 4.5
+      }
+    },
+    watchOverflow: true,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    }
+  });
+</script>
+{% endif %}

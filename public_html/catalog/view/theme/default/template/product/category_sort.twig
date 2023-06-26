@@ -1,0 +1,10 @@
+<button class="btn btn-sort btn-dropdown">{{ current_sort }}</button>
+<div class="sort-options">
+  {% for sorts in sorts %}
+    {% if sorts.value == '%s-%s'|format(sort, order) %}
+      <a href="{{ sorts.href }}" class="active">{{ sorts.text }}</a>
+    {% else %}
+      <a href="{{ sorts.href }}">{{ sorts.text }}</a>
+    {% endif %}
+  {% endfor %}
+</div>

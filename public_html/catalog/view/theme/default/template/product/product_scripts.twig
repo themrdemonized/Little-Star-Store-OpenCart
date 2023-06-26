@@ -1,0 +1,873 @@
+<script>
+var galleryThumbs;
+var galleryTop;
+$(document).ready(function() {
+  galleryThumbs = new Swiper('.gallery-bottom', {
+      spaceBetween: 10,
+      slidesPerView: 5,
+      freeMode: true,
+      watchSlidesVisibility: true,
+      watchSlidesProgress: true,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      on: {
+        init: function() {
+          if (this.slides.length <= 5) {
+            $('.gallery-bottom .swiper-button-prev, .gallery-bottom .swiper-button-next').hide();
+          }
+        }
+      }
+    });
+  galleryTop = new Swiper('.gallery-top', {
+      spaceBetween: 10,
+      thumbs: {
+        swiper: galleryThumbs,
+      },
+      navigation: ($('.gallery-top + .swiper-pager').length > 0 || $('.gallery-top .swiper-pager').length > 0) ? {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      } : false,
+      on: {
+        init: function() {
+          var _this = this;
+          setTimeout(function() {
+            $('.gallery-top').css('min-height', _this.height);
+          }, 1000);
+        }
+      }
+    });
+  setTimeout(function() {
+    $('.gallery-bottom').css('height', '100%');
+    $('<style>.gallery-bottom .swiper-slide { max-width: ' + $('.gallery-bottom .swiper-slide').css('width') + '; }</style>').appendTo('head');
+    $('.gallery-top').css('min-height', this.height);
+    }, 200);
+  
+});
+</script> 
+<script src="catalog/view/javascript/blowup.min.js" type="text/javascript"></script>
+<script>
+function initImageZoom() {
+  $(document).ready(function() {
+    $('.gallery-top .thumbnail:not(.thumbnail-placeholder) img, .product-thumbnail > .thumbnail:not(.thumbnail-placeholder) img').each(function() {
+      $(this).blowup();
+    });
+  });
+}
+initImageZoom();
+</script>
+<style>
+  .product-thumbnail.preloader-active {
+    position: relative;
+    pointer-events: none;
+  }
+  .product-image-preloader {
+    position: absolute;
+    display: flex;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    align-items: center;
+    justify-content: center;
+  }
+  .product-image-preloader div {
+    width: 128px;
+    height: 128px;
+    border-width: 4px;
+  }
+</style>
+<script src="catalog/view/javascript/moment.min.js" type="text/javascript"></script>
+<script>
+  //Yandex Ecommerce
+  {% if options %}
+    if (typeof dataLayer != 'undefined') {
+      {% for option in options %}
+      {% for option_value in option.product_option_value %}
+      dataLayer.push({
+        "ecommerce": {
+          "currencyCode": "RUB",
+          "detail": {
+            "products": [
+              {
+                "id": "{{ js_model }}" || "{{ product_id }}",
+                "name": "{{ js_heading_title }}",
+                "price": parseFloat("{{ option_value.price_raw }}"),
+                "category": "{{ categories }}",
+                "variant": "{{ option_value.js_name }}"
+              }
+            ]
+          }
+        }
+      });
+      {% endfor %}
+      {% endfor %}
+    }
+  {% else %}
+    if (typeof dataLayer != 'undefined') {
+      dataLayer.push({
+        "ecommerce": {
+          "currencyCode": "RUB",
+          "detail": {
+            "products": [
+              {
+                "id": "{{ js_model }}" || "{{ product_id }}",
+                "name" : "{{ js_heading_title }}",
+                "price": parseFloat("{{ price_raw }}"),
+                "category" : "{{ categories }}"
+              }
+            ]
+          }
+        }
+      });
+    }
+  {% endif %}
+</script>
+<script type="text/javascript"><!--
+$('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
+  $.ajax({
+    url: 'index.php?route=product/product/getRecurringDescription',
+    type: 'post',
+    data: $('input[name=\'product_id\'], input[name=\'quantity\'], select[name=\'recurring_id\']'),
+    dataType: 'json',
+    beforeSend: function() {
+      $('#recurring-description').html('');
+    },
+    success: function(json) {
+      $('.alert-dismissible, .text-danger').remove();
+
+      if (json['success']) {
+        $('#recurring-description').html(json['success']);
+      }
+    }
+  });
+});
+//--></script>
+
+<script type="text/javascript"><!--
+
+  function isset(variable) {
+    return (typeof(variable) != "undefined" && variable !== null);
+  }
+
+  if (!isset(days)) {
+    var days = {
+      mon: 'Пн',
+      tue: 'Вт',
+      wed: 'Ср',
+      thu: 'Чт',
+      fri: 'Пт',
+      sat: 'Сб',
+      sun: 'Вс'
+    };
+  }
+
+  if (!isset(time_format)) {
+    var time_format = 'H:mm';
+  }
+
+  var callbacks = {
+    get_warehouse_info: []
+  };
+
+  function add_callback(key, func) {
+    callbacks[key].push(func);
+  }
+
+  function send_callback(key, ...args) {  
+    callbacks[key].forEach(function(item) {
+        item(...args);
+    });
+  }
+
+  function get_warehouse_info() {
+    $.ajax({
+      url: 'index.php?route=product/product_warehouse',
+      type: 'POST',
+      data: {product_id: '{{ product_id }}', option_value_id: $('select.product-option').find('option:selected').data('optionvalueid') || 0},
+      dataType: 'JSON',
+      beforeSend: function() {
+        $('.product-container .product-warehouse').html('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
+      },
+      success: function(json) {
+        if (isset(json)) {
+          if (isset(json['warehouses'])) {
+            if (!($('#product-warehouse-modal').length)) {
+              $('body').append('<div id="product-warehouse-modal" class="modal fade" role="dialog"></div>');
+            }
+
+            var warehouses = '<div class="modal-dialog"><div class="modal-content">';
+            warehouses += '<div class="modal-header flex-container flex-center flex-justify"><h3 class="header-1">Наличие товара (Хабаровск)</h3><button type="button" class="close button-remove transparent" data-dismiss="modal"><img src="image/src/ic-disable.svg" alt="Удалить" style="width: 24px;"></button></div>';
+            warehouses += '<div class="modal-body"><div class="flex-container flex-center flex-justify"><div class="product-warehouse-info">';
+            $.each(json['warehouses'], function(index, el) {
+              warehouses += '<div class="flex-container flex-center flex-justify"><div><h4 class="product-warehouse-name header-3">' + el['name'] + '</h4><p class="product-warehouse-address secondary">' + el['address'] + '</p>';
+              var working_hours = [];
+              $.each(el['working_hours'], function(k, v) {
+                working_hours.push(days[v['starting_day']] + (v['starting_day'] != v['ending_day'] ? ("-" + days[v['ending_day']]) : '') + " " + moment(v['starting_time'], "H:mm:ss").format(time_format) + " – " + moment(v['ending_time'], "H:mm:ss").format(time_format));
+              });
+              warehouses += '<p class="product-warehouse-hours subparagraph">' + working_hours.join(", ") + '</p></div>';
+              warehouses += '<div>' + (el['quantity'] ? ('<p class="product-warehouse-quantity third">сегодня: ' + el['quantity'] + ' шт.</p>') : '<p class="product-warehouse-quantity text-medium">Нет в наличии</p>') + '</div></div>';
+            });
+            warehouses += '</div>';
+            warehouses += '</div>';
+
+            $('#product-warehouse-modal').html(warehouses);
+
+            if (json['count'] > 0) {
+              $('.product-container .product-warehouse').html('В наличии: <a href data-toggle="modal" data-target="#product-warehouse-modal">в ' + json['count'] + ' ' + ((json['count'] % 100 >= 11 && json['count'] % 100 <= 19) || json['count'] % 10 >= 5 ? 'магазинах' : (json['count'] % 10 == 1 ? 'магазине' : 'магазинах')));
+              $('#button-cart').prop('disabled', false);
+            } else {
+              $('.product-container .product-warehouse').html('Нет в наличии');
+              $('#button-cart').prop('disabled', true);
+            }
+
+            $('.product-container .product-warehouse').show();
+          } else if (isset(json['quantity'])) {
+            if (json['quantity'] > 0) {
+              $('.product-container .product-warehouse').addClass('has-product').html('В наличии: ' + json['quantity'] + ' шт.');
+              $('#button-cart').prop('disabled', false);
+            } else {
+              $('.product-container .product-warehouse').removeClass('has-product').html('Нет в наличии');
+              $('#button-cart').prop('disabled', true);
+            }
+            $('.product-container .product-warehouse').show();
+            send_callback('get_warehouse_info', $('.product-container .product-warehouse'), json);
+          }
+        } else {
+          $('#button-cart').prop('disabled', false);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
+
+  var option_value_ids = [];
+  var option_characteristics = {};
+  var option_value_characteristics = {};
+  var option_characteristics_table = [];
+  var option_characteristics_length = 0;
+
+  $('select.product-option option').each(function() {
+    option_value_ids.push($(this).data('optionvalueid'));
+  });
+
+  function get_option_value_characteristics() {
+    $.ajax({
+      url: 'index.php?route=product/option_value_characteristic/getOptionValueCharacteristics',
+      type: 'POST',
+      data: {option_value_ids: option_value_ids},
+      dataType: 'JSON',
+      success: function(json) {
+
+        //console.log(json);
+       
+        $.each(json, function(index, el) {
+          option_value_characteristics[JSON.stringify(Object.keys(el))] = index;
+        });
+        
+        //console.log(option_value_characteristics);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
+
+  function select_single_option_characteristics() { 
+    if (option_characteristics_length > 0) {
+      $('body').on('DOMNodeInserted', '.option-options-dummy', function() {
+          setTimeout(function() {
+            var single_options = 0;
+            $('.option-options').each(function(index, el) {
+              if ($(this).find('.option-option').length == 1) {
+                $(this).find('.option-option input').prop('checked', true);
+                single_options++;
+              }
+            });
+            if (single_options == option_characteristics_length) {
+              get_option_value_by_characteristic();
+            }
+          }, 300);   
+      });
+    }
+  }
+
+  function get_option_characteristics() {
+    $.ajax({
+      url: 'index.php?route=product/option_value_characteristic/getAllOptionCharacteristics',
+      type: 'POST',
+      data: {option_value_ids: option_value_ids},
+      dataType: 'JSON',
+      beforeSend: function() {
+        $('.option-value-characteristic').show().html('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
+      },
+      success: function(json) {
+        //console.log(json);
+        var chars = '<div class="option-options-dummy" style="display: none!important;"></div>';
+        if (json['grouped'].length > 0) {
+          console.log(json['grouped']);
+          option_characteristics_length = json['grouped'].length;
+          option_characteristics_table = json['raw'];
+          $.each(json['grouped'], function(index, el) {
+            option_characteristics[index] = el['characteristic_id'];
+            chars += '<div class="option-options flex-container flex-center flex-justify"><label>' + el['name'] + '</label>';
+            if (el['type'] == 'select') {
+              chars += '<div class="option-select flex-container flex-center flex-list">'
+              $.each(el['characteristic'], function(k, v) {
+                chars += '<div class="select-radio-button option-option"><input type="checkbox" name="select-' + el['characteristic_id'] + '" ';
+                chars += 'data-characteristicid="' + el['characteristic_id'] + '" ' + "data-select='" + v['value'] + "' " + 'name="select-' + el['characteristic_id'] + '" id="select-' + el['characteristic_id']+v['value'] + '" value="' + v['option_value_id'] + '" data-type="' + el['type'] + '" data-optionvaluecharacteristicid="' + v['option_value_characteristic_id'] + '" data-key=\'' + v['key'] + '\'><label for="select-' + el['characteristic_id']+v['value'] + '">';
+                chars += '<span>' + v['value'] + '</span></label></div>';
+              });
+              chars += '</div>';
+            } else if (el['type'] == 'colors') {
+              chars += '<div class="option-colors flex-container flex-center flex-list">'
+              $.each(el['characteristic'], function(k, v) {
+                chars += '<div class="color-radio-button option-option"><input type="checkbox" name="colors-' + el['characteristic_id'] + '" ';
+                $.each(v['value'], function(color, color_code) {
+                  var obj = {};
+                  obj[color] = color_code;
+                  chars += 'data-characteristicid="' + el['characteristic_id'] + '" ' + "data-color='" + JSON.stringify(obj) + "' " + 'name="colors-' + el['characteristic_id'] + '" id="colors-' + color+color_code + '" value="' + v['option_value_id'] + '" data-type="' + el['type'] + '" data-optionvaluecharacteristicid="' + v['option_value_characteristic_id'] + '" data-key=\'' + v['key'] + '\'><label for="colors-' + color+color_code + '" data-toggle="tooltip" title="' + color + '">';
+                  if (color_code == "") {
+                    chars += '<span><span>' + color + '</span></span></label>';
+                  } else {
+                    chars += '<span style="background-color: ' + color_code + '"></span></label>';
+                  }
+                  chars += '</label>'
+                });
+                chars += '</div>';
+              });
+              chars += '</div>';
+            }
+            chars += '<ul class="option-characteristic-description navigation leaders list-unstyled"></ul>';
+            chars += '</div>';
+          });
+          select_single_option_characteristics();
+        } else {
+          $('select.product-option').parent().show();
+          get_warehouse_info();
+        }
+        $('.option-value-characteristic').html(chars);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+      }
+    });
+  }
+
+  function findOne(haystack, arr) {
+    return arr.some(function(v) {
+      return haystack.includes(v);
+    });
+  }
+
+  var last_characteristics = [];
+  var last_characteristic;
+  
+  function get_available_options(input) {
+    //console.log(option_characteristics_table);
+    var el;
+    if ($(input).prop('checked') || $(input).prop('selected')) {
+      if ($(input).data('characteristicid') == $(last_characteristic).data('characteristicid')) {
+        last_characteristics.pop();
+      } else {
+        last_characteristics = last_characteristics.filter(function(e) {
+          return $(e).data('characteristicid') !== $(input).data('characteristicid');
+        });
+      }
+      last_characteristic = input;
+      last_characteristics.push(input);
+    } else {
+      last_characteristics = last_characteristics.filter(function(e) {
+        return e !== input;
+      });
+      last_characteristic = last_characteristics[last_characteristics.length - 1];
+    }
+
+    el = last_characteristic;
+    //console.log(el, last_characteristic, last_characteristics);
+
+    var current_option = option_characteristics_table.filter(function(e) {
+      return e.key == $(el).data('key');
+    });
+    
+    if (isset(current_option[0]) && ($(el).prop('checked') || $(el).prop('selected'))) {
+      current_option = current_option[0];
+      //console.log(current_option['description']);
+
+      var option_description = '';
+      if (isset(current_option['description']) && current_option['description'].length > 0) {
+        $.each(JSON.parse(current_option['description']), function(index, e) {
+          option_description += '<li><span>' + index + '</span><span class="text-high">' + e + '</span></li>';
+        });
+      }
+      $(el).parents('.option-options').find('.option-characteristic-description').html(option_description);
+    } else {
+      $(el).parents('.option-options').find('.option-characteristic-description').html('');
+    }
+
+    // if ($(el).is('select')) {
+    //   var options = option_characteristics_table.filter(function(e) {
+    //     return e.key == $(el).find('option:selected').data('key');
+    //   }).map(function(value, index) {
+    //     return value['option_value_id'];
+    //   });
+    // } else if ($(el).is('input[type=checkbox]')) {
+    //   if ($(el).prop('checked')) {
+    //     var options = option_characteristics_table.filter(function(e) {
+    //       return e.key == $(el).data('key');
+    //     }).map(function(value, index) {
+    //       return value['option_value_id'];
+    //     });
+    //   }
+    // }
+
+    if (option_characteristics_length > 1) {
+      var available_options = option_characteristics_table;
+      $.each(last_characteristics, function(index, ch) {
+        available_options = available_options.filter(function(e) {
+          return findOne(e.option_value_id, option_characteristics_table.filter(function(x) {
+            return x.key == $(ch).data('key');
+          }).map(function(value, index) {
+            return value['option_value_id'];
+          })) || e.characteristic_id == $(ch).data('characteristicid');
+        });
+        //console.log(available_options);
+      });
+
+    
+      var keep_options = {};
+      $.each(available_options, function(index, e) {
+        if (!isset(keep_options[e['type']])) {
+          keep_options[e['type']] = {};
+        }
+        if (!isset(keep_options[e['type']][e['characteristic_id']])) {
+          keep_options[e['type']][e['characteristic_id']] = [];
+        }
+        keep_options[e['type']][e['characteristic_id']].push(e['key']);
+      });
+
+      //console.log(keep_options);
+
+      $.each(keep_options, function(index, e) {
+        $.each(e, function(k, v) {
+          $('.option-value-characteristic select[data-characteristicid=' + k + '] option, .option-value-characteristic .option-select input[data-characteristicid=' + k + '], .option-value-characteristic .option-colors input[data-characteristicid=' + k + ']').each(function() {
+            if (v.includes($(this).data('key'))) {
+              $(this).prop('disabled', false);
+            } else {
+              $(this).prop('disabled', true);
+            }
+          });
+        });
+      });
+    }
+  }
+
+  function containsAll(arrays/* pass array list here */) {
+    var output = [];
+    var cntObj = {};
+    var array, item, cnt;
+    // for each array passed as an argument to the function
+    for (var i = 0; i < arrays.length; i++) {
+        array = arrays[i];
+        // for each element in the array
+        for (var j = 0; j < array.length; j++) {
+            item = "-" + array[j];
+            cnt = cntObj[item] || 0;
+            // if cnt is exactly the number of previous arrays, 
+            // then increment by one so we count only one per array
+            if (cnt == i) {
+                cntObj[item] = cnt + 1;
+            }
+        }
+    }
+    // now collect all results that are in all arrays
+    for (item in cntObj) {
+        if (cntObj.hasOwnProperty(item) && cntObj[item] === arrays.length) {
+            output.push(item.substring(1));
+        }
+    }
+    return(output);
+  }
+
+  function __get_available_options(input) {
+    var inp = input;
+    if ($(input).prop('checked')) {
+      if ($(input).data('characteristicid') == $(last_characteristic).data('characteristicid')) {
+        last_characteristics.pop();
+      }
+      last_characteristic = input;
+      last_characteristics.push(input);
+    } else {
+      last_characteristics = last_characteristics.filter(function(e) {
+        return e !== input;
+      });
+      last_characteristic = last_characteristics[last_characteristics.length - 1];
+    }
+
+    input = last_characteristic;
+    //console.log(input, last_characteristic, last_characteristics);
+
+    var current_option = option_characteristics_table.filter(function(e) {
+      return e.key == $(input).data('key');
+    });
+    
+    if (isset(current_option[0]) && $(input).prop('checked')) {
+      current_option = current_option[0];
+      //console.log(current_option['description']);
+
+      var option_description = '';
+      if (isset(current_option['description']) && current_option['description'].length > 0) {
+        $.each(JSON.parse(current_option['description']), function(index, e) {
+          option_description += '<li><span>' + index + '</span><span class="text-high">' + e + '</span></li>';
+        });
+      }
+      $(input).parents('.option-options').find('.option-characteristic-description').html(option_description);
+    } else {
+      $(input).parents('.option-options').find('.option-characteristic-description').html('');
+    }
+
+    if (option_characteristics_length > 1) {
+      var available_option_value_id = [];
+      //console.log(option_characteristics_table);
+
+      $('.option-value-characteristic select option:selected, .option-value-characteristic .option-colors input:checked, .option-value-characteristic .option-select input:checked').each(function(index, el) {
+        available_option_value_id.push(option_characteristics_table.filter(function(e) {
+          return e.key == $(el).data('key');
+        }).map(function(value, index) {
+          return value['option_value_id'];
+        }));
+      });
+
+      //console.log("available_option_value_id: ", available_option_value_id);
+
+      if (!available_option_value_id.length) {
+        available_option_value_id = option_characteristics_table.map(function(value, index) {
+          return value['option_value_id'];
+        });
+      } else {
+        available_option_value_id = containsAll(available_option_value_id);
+      }
+      //console.log("available_option_value_id: ", available_option_value_id);
+
+      var available_options = option_characteristics_table.filter(function(e) {
+        return last_characteristics.length < 2 ? (available_option_value_id.includes(e['option_value_id']) || e.characteristic_id == $(input).data('characteristicid')) : (available_option_value_id.includes(e['option_value_id']));
+      });
+      //console.log("available_options: ", available_options);
+
+      var keep_options = {};
+      $.each(available_options, function(index, e) {
+        if (!isset(keep_options[e['type']])) {
+          keep_options[e['type']] = {};
+        }
+        if (!isset(keep_options[e['type']][e['characteristic_id']])) {
+          keep_options[e['type']][e['characteristic_id']] = [];
+        }
+        keep_options[e['type']][e['characteristic_id']].push(e['key']);
+      });
+
+      //console.log("keep_options: ", keep_options);
+
+      if (!$(inp).prop('checked')) {
+        $.each(keep_options, function(index, e) {
+          $.each(e, function(k, v) {
+            $('.option-value-characteristic select[data-characteristicid=' + k + '] option, .option-value-characteristic .option-select input[data-characteristicid=' + k + '], .option-value-characteristic .option-colors input[data-characteristicid=' + k + ']').each(function() {
+              if (v.includes($(this).data('key'))) {
+                $(this).prop('disabled', false);
+              } else {
+                $(this).prop('disabled', true);
+              }
+            });
+          });
+        });
+      } else {
+        $.each(keep_options, function(index, e) {
+          $.each(e, function(k, v) {
+            if (k != $(inp).data('characteristicid')) {
+              $('.option-value-characteristic select[data-characteristicid=' + k + '] option, .option-value-characteristic .option-select input[data-characteristicid=' + k + '], .option-value-characteristic .option-colors input[data-characteristicid=' + k + ']').each(function() {
+                if (v.includes($(this).data('key'))) {
+                  $(this).prop('disabled', false);
+                } else {
+                  $(this).prop('disabled', true);
+                }
+              });
+            }
+          });
+        });
+      }
+    }
+  }
+
+  function get_option_value_by_characteristic() {
+    var ovc = [];
+    $('.option-value-characteristic select option:selected, .option-value-characteristic .option-select input:checked, .option-value-characteristic .option-colors input:checked').each(function() {
+      ovc.push($(this).data('key').toString());
+    });  
+   
+    //console.log(ovc);
+    ovc = ovc.sort(function(a, b) {
+      return parseInt(a) - parseInt(b);
+    });
+    //console.log(ovc);
+    ovc = JSON.stringify(ovc);
+    //console.log(ovc);
+
+    if (isset(option_value_characteristics[ovc])) {
+      $('select.product-option').val($('select.product-option option[data-optionvalueid="' + option_value_characteristics[ovc] + '"').val()).change();
+    } else {
+      $('#button-cart').prop('disabled', true);
+    }
+  }
+
+  if (option_value_ids.length > 0) {
+    get_option_characteristics();
+    get_option_value_characteristics();
+  } else {
+    get_warehouse_info();
+  }
+
+  $('body').on('change', '.option-value-characteristic select, .option-value-characteristic .option-colors input, .option-value-characteristic .option-select input', function() {
+    var group_name = $(this).attr('name');
+    //console.log(group_name);
+    $('.option-value-characteristic .option-colors input[name=' + group_name + '], .option-value-characteristic .option-select input[name=' + group_name + ']').not(this).prop('checked', false);
+    get_available_options(this);
+    get_option_value_by_characteristic();
+
+    if ($(this).data('type') == 'colors') {
+      var option_value_id = $(this).val();
+      var main_colors = !$(this).prop('checked');
+
+      // console.log(main_colors);
+
+      $.ajax({
+        url: 'index.php?route=product/product_image/getColorImage',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {product_id: '{{ product_id }}', option_value_id: option_value_id, main_colors: main_colors},
+        beforeSend: function() {
+          $('.product-thumbnail').addClass('preloader-active').prepend('<div class="lds-ring product-image-preloader"><div></div><div></div><div></div><div></div></div>');
+        }
+      })
+      .done(function(json) {
+        // console.log(json)
+        if (json.length > 0) {
+          galleryThumbs.removeAllSlides();
+          galleryTop.removeAllSlides();
+          $.each(json, function(index, el) {
+            galleryTop.appendSlide('<div class="swiper-slide"><div class="thumbnail detail-view" style="background-image: url(' + el + ');"</div></div>');
+            galleryThumbs.appendSlide('<div class="swiper-slide"><div class="thumbnail"><img src="' + el + '" itemprop="image"/></div></div>');
+          });
+          initImageZoom();
+          galleryThumbs.attachEvents();
+        }
+      })
+      .fail(function(er1, er2, er3) {
+        console.log("error");
+        console.log(er1, er2, er3);
+      })
+      .always(function() {
+        $('.product-image-preloader').remove();
+        $('.product-thumbnail').removeClass('preloader-active');
+      });
+      
+    }
+  });
+
+  $('select.product-option').change(function(){
+    var price = $(this).find('option:selected').data("price");
+    var price_old = $(this).find('option:selected').data("priceold");
+    $('.product-buy-{{ product_id }} .product-price .price').attr("data-price", price);
+    $('.product-buy-{{ product_id }} .product-price .price-old').text(price_old);
+    $('.product-buy-{{ product_id }} .product-buy-quantity input[name="quantity"]').trigger('focusout');
+    get_warehouse_info();
+  });
+//--></script> 
+
+<script type="text/javascript"><!--
+$('#button-cart').on('click', function() {
+  $.ajax({
+    url: 'index.php?route=checkout/cart/add',
+    type: 'post',
+    data: $('#product input[type=\'number\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+    dataType: 'json',
+    beforeSend: function() {
+      $('#cart > .btn').removeClass('added');
+    },
+    complete: function() {
+      //$('#button-cart').button('reset');
+    },
+    success: function(json) {
+      $('.alert-dismissible, .text-danger').remove();
+      $('.form-group').removeClass('has-error');
+
+      if (json['error']) {
+        if (json['error']['option']) {
+          for (i in json['error']['option']) {
+            var element = $('#input-option' + i.replace('_', '-'));
+
+            if (element.parent().hasClass('input-group')) {
+              element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+            } else {
+              element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+            }
+          }
+        }
+
+        if (json['error']['recurring']) {
+          $('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+        }
+
+        // Highlight any found errors
+        $('.text-danger').parent().addClass('has-error');
+      }
+
+      if (json['success']) {
+        $('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+        setTimeout(function () {
+          $('#cart > .btn').addClass('added');
+          $('.button-cart-total').text(json['total']);
+          $('.button-cart-sum').text(json['sum']);
+          //$('#button-cart').html('<span class="cart-icon"></span>В корзине').attr("onclick", "location.href = 'checkout'").addClass('active').unbind();
+        }, 100);
+
+        
+
+        $('#cart > ul').load('index.php?route=common/cart/info ul li');
+        
+        sendYandexEcommerce({
+            "id": json['metrika']['id'],
+            "name": json['metrika']['name'],
+            "price": parseFloat(json['metrika']['price']),
+            "category": json['metrika']['category'],
+            "quantity": json['metrika']['quantity'],
+            "variant" : json['metrika']['variant']
+          }, "add");
+      }
+    },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+  });
+});
+//--></script> 
+<script type="text/javascript"><!--
+$('.date').datetimepicker({
+  language: '{{ datepicker }}',
+  pickTime: false
+});
+
+$('.datetime').datetimepicker({
+  language: '{{ datepicker }}',
+  pickDate: true,
+  pickTime: true
+});
+
+$('.time').datetimepicker({
+  language: '{{ datepicker }}',
+  pickDate: false
+});
+
+$('button[id^=\'button-upload\']').on('click', function() {
+  var node = this;
+
+  $('#form-upload').remove();
+
+  $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+  $('#form-upload input[name=\'file\']').trigger('click');
+
+  if (typeof timer != 'undefined') {
+      clearInterval(timer);
+  }
+
+  timer = setInterval(function() {
+    if ($('#form-upload input[name=\'file\']').val() != '') {
+      clearInterval(timer);
+
+      $.ajax({
+        url: 'index.php?route=tool/upload',
+        type: 'post',
+        dataType: 'json',
+        data: new FormData($('#form-upload')[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $(node).button('loading');
+        },
+        complete: function() {
+          $(node).button('reset');
+        },
+        success: function(json) {
+          $('.text-danger').remove();
+
+          if (json['error']) {
+            $(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+          }
+
+          if (json['success']) {
+            alert(json['success']);
+
+            $(node).parent().find('input').val(json['code']);
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+    }
+  }, 500);
+});
+//--></script> 
+<script>
+$('#review').delegate('.pagination a', 'click', function(e) {
+    e.preventDefault();
+
+    $('#review').fadeOut('slow');
+
+    $('#review').load(this.href);
+
+    $('#review').fadeIn('slow');
+});
+
+$('#review').load('index.php?route=product/product/review&product_id={{ product_id }}');
+
+$('#button-review').on('click', function() {
+  $.ajax({
+    url: 'index.php?route=product/product/write&product_id={{ product_id }}',
+    type: 'post',
+    dataType: 'json',
+    data: $("#form-review").serialize(),
+    beforeSend: function() {
+      $('#button-review').button('loading');
+    },
+    complete: function() {
+      $('#button-review').button('reset');
+    },
+    success: function(json) {
+      $('.alert-dismissible').remove();
+
+      if (json['error']) {
+        $('#review').after('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+      }
+
+      if (json['success']) {
+        $('#review').after('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> ' + json['success'] + '</div>');
+
+        $('input[name=\'name\']').val('');
+        $('textarea[name=\'text\']').val('');
+        $('input[name=\'rating\']:checked').prop('checked', false);
+      }
+    }
+  });
+});
+</script>

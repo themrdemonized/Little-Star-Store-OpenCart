@@ -1,0 +1,82 @@
+{% set currentPath = og_url|split('/')|last|replace({'/': ''}) %}
+<div id="cart" class="btn-group">
+  <button type="button" data-loading-text="{{ text_loading }}" class="btn dropdown-toggle hide-mobile">
+    <div>
+      <p class="button-cart-total caption">{{ cart_count }}</p>
+      <p class="button-cart-sum hide-mobile text-high">{% if cart_count != 0 %}{{ sum }}{% endif %}</p>
+    </div>
+  </button>
+  <ul class="cart-dropdown dropdown-menu pull-right hide-mobile">
+    <li class="cart-loader"></li>
+    {% if products or vouchers %}
+    <li>
+      <table class="table table-striped">
+        {% for product in products %}
+        <tr>
+          <td class="text-center cart-image">
+            {% if product.thumb %}
+              <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a>
+            {% else %}
+              <a href="{{ product.href }}"><img src="image/placeholder.png" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a>
+            {% endif %}
+          </td>
+          <td class="text-left cart-name">
+            <a href="{{ product.href }}" class="caption">{{ product.name }}</a>
+            {% if product.option %}
+              {% for option in product.option %}
+                <br />
+                - <small>{{ option.name }} {{ option.value }}</small>
+              {% endfor %}
+            {% endif %}
+            {% if product.recurring %}
+              <br />
+              - <small>{{ text_recurring }} {{ product.recurring }}</small>
+            {% endif %}
+            <div class="product-buy flex-container flex-center">
+              <div class="product-buy-quantity flex-container flex-center">
+                  <button type="button" class="btn-minus"></button>
+                  <input type="number" name="quantity" value="{{ product.quantity }}" min="1" data-product="{{ product.cart_id }}">
+                  <button type="button" class="btn-plus"></button>
+              </div>
+            </div>
+          </td>
+          <td class="cart-total text-right header-3">{{ product.total }}</td>
+          <td class="cart-delete">
+            <span class="input-group-btn" style="display: inline-block;">
+              <button class="button-remove transparent" data-product="{{ product.cart_id }}" data-productid="{{ product.product_id }}" title="Удалить из корзины"><img src="image/src/ic-disable.svg" alt="Удалить" style="width: 32px;"></button>
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+        {% for voucher in vouchers %}
+        <tr>
+          <td class="text-center"></td>
+          <td class="text-left">{{ voucher.description }}</td>
+          <td class="text-right">x&nbsp;1</td>
+          <td class="text-right">{{ voucher.amount }}</td>
+          <td class="text-center text-danger"><button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </li>
+    <li>
+      <div class="cart-checkout flex-container flex-center flex-justify">
+        <a href="{{ checkout }}" class="btn">{{ text_checkout }}</a>
+        <div class="total">
+          <p>Cумма заказа</p>
+          <p class="header-3 cart-total text-right">{{ totals|first.text }}</p>
+        </div>
+      </div>
+    </li>
+    {% else %}
+    <li>
+      <p class="text-center">{{ text_empty }}</p>
+    </li>
+    {% endif %}
+  </ul>
+  <a href="checkout" class="btn mobile mobile-block{% if currentPath == 'checkout' %} current{% endif %}">
+    <div>
+      <p class="button-cart-total caption">{{ cart_count }}</p>
+    </div>
+  </a>
+</div>

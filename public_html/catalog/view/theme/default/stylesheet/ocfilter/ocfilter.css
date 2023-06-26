@@ -1,0 +1,353 @@
+.ocfilter {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    border: none;
+    overflow: hidden;
+}
+
+.ocfilter .list-group-item {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 10px 16px;
+    margin: 0;
+    border-radius: 0!important;
+}
+
+.ocfilter .list-group-item:first-child {
+    border-top: none;
+}
+
+
+/*=Font size */
+.ocfilter-option .ocf-option-name,
+.ocfilter-option .ocf-option-values,
+.ocfilter-option .ocf-option-description,
+.ocfilter-option .fields-price {
+    font-size: 12px;
+    line-height: 16px;
+    color: #333333;
+}
+
+.ocfilter-option .ocf-option-name,
+.ocfilter-dropdown button {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 24px;
+}
+
+.ocfilter-option .ocf-option-values {
+    overflow: visible;
+}
+
+.ocfilter-option button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-group-item {
+    overflow: visible !important;
+}
+
+.ocfilter-dropdown button {
+    padding: 0;
+    margin-bottom: 8px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+}
+
+.ocfilter-dropdown button span {
+    vertical-align: middle;
+}
+
+.ocfilter-dropdown button:before {
+    vertical-align: middle;
+    margin-right: 8px;
+    transform: none;
+    transition: all 0.2s ease-in-out;
+    display: inline-block;
+    content: url('src/drop-arrow.svg');
+    line-height: 0;
+}
+
+.ocfilter-dropdown-menu {
+    min-width: 100%;
+    max-height: 0;
+    overflow: auto;
+    height: 100%;
+    display: block;
+    float: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background-clip: initial;
+    transition: all 0.2s ease-in-out;
+    position: static;
+}
+
+.ocfilter-dropdown.open .ocfilter-dropdown-menu {
+    max-height: 250px;
+}
+
+.ocfilter-dropdown.open button:before {
+    transform: rotate(180deg);
+}
+
+.ocfilter-option .ocf-color {
+    border-radius: 3px 3px 3px 3px;
+    float: left;
+    height: 19px;
+    margin: 1px -16px 0 -3px;
+    width: 19px;
+}
+
+.ocfilter-option .ocf-image {
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    float: left;
+    height: 19px;
+    margin: 1px -16px 0 -3px;
+    position: relative;
+    width: 19px;
+    z-index: 10;
+}
+
+.ocfilter-option label {
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: pointer;
+    display: block;
+    white-space: normal;
+    padding: 4px 0 4px 24px;
+    width: 100%;
+    text-decoration: none;
+}
+
+.ocfilter-option .radio-container .checkmark {
+    border: 1px solid rgba(0, 0, 0, 0.42);
+}
+
+.ocfilter-option .radio-container input:checked~.checkmark {
+    background-color: transparent;
+    border: 4px solid #CCA984;
+}
+
+.noUi-connect {
+    background-color: #CCA984;
+}
+
+.ocfilter-option .radio-container .checkmark:after {
+    display: none;
+}
+
+.ocfilter-option .dropdown-menu label {
+    white-space: nowrap;
+}
+
+.ocfilter-option label input {
+    display: inline-block;
+    margin: 0 5px 0 0;
+    vertical-align: top;
+}
+
+.ocfilter-option label small {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #9C9CA9;
+    background-color: #fff;
+    margin-left: 4px;
+    display: inline;
+    padding: 0;
+}
+
+.ocfilter-option label small:before {
+    content: "(";
+}
+
+.ocfilter-option label small:after {
+    content: ")";
+}
+
+.ocfilter-option label.disabled {
+    color: #999999;
+}
+
+.ocfilter-option label.disabled small {
+    color: #999999;
+}
+
+.ocfilter-option label.ocf-selected small {
+    opacity: 0;
+}
+
+/*=Collapse Options */
+button[data-target="#ocfilter-hidden-options"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+button[data-target="#ocfilter-hidden-options"] .fa:before {
+    content: "\f078";
+}
+
+button[data-target="#ocfilter-hidden-options"][aria-expanded="true"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+button[data-target="#ocfilter-hidden-options"][aria-expanded="true"] .fa:before {
+    content: "\f077";
+}
+
+/*=Collapse Values */
+.collapse-value {
+    margin-bottom: 10px;
+}
+
+.collapse-value>button,
+.collapse-value>button:focus,
+.collapse-value>button:active,
+.collapse-value>button:active:focus {
+    text-align: left;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    font-size: 12px;
+    text-decoration: underline;
+    outline: none;
+}
+
+.collapse-value>button .fa:before {
+    content: "\f107";
+}
+
+.collapse-value>button[aria-expanded="true"] {}
+
+.collapse-value>button[aria-expanded="true"] .fa:before {
+    content: "\f106";
+}
+
+/*=Selected Options */
+.selected-options {
+    color: #333333;
+    padding: 0;
+}
+
+.selected-options .ocfilter-option {
+    font-size: 14px;
+}
+
+
+.selected-options>button {
+    margin-top: 32px;
+}
+
+/*=Price filtering */
+#ocfilter-price .ocf-option-values {
+    padding: 10px 10px 5px;
+}
+
+.trackbar,
+.trackbar .left-block,
+.trackbar .right-block {
+    height: 4px;
+}
+
+.popover-content .form-inline {
+    white-space: nowrap;
+}
+
+.popover-content .form-inline .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.scale {
+    margin-bottom: 35px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.ocfilter .popover .form-inline .form-control {
+    width: 100px;
+}
+
+/* Position center style */
+.ocfilter-content-top,
+.ocfilter-content-bottom {}
+
+.ocfilter-content-top .box-content,
+.ocfilter-content-bottom .box-content {
+    font-size: 0;
+}
+
+.ocfilter-content-top .ocfilter-option,
+.ocfilter-content-bottom .ocfilter-option {
+    display: inline-block;
+    vertical-align: top;
+    width: 33%;
+}
+
+.ocfilter-content-top .ocfilter-option+.ocfilter-option,
+.ocfilter-content-bottom .ocfilter-option+.ocfilter-option {
+    border-top: none;
+}
+
+/*=Mobile */
+.ocf-offcanvas {
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+    bottom: 0;
+    left: -250px;
+    z-index: 1001;
+    height: 100%;
+    width: 250px;
+    padding: 0;
+
+    -webkit-transition: left 250ms ease;
+    -moz-transition: left 250ms ease;
+    -ms-transition: left 250ms ease;
+    -o-transition: left 250ms ease;
+    transition: left 250ms ease;
+}
+
+.ocf-offcanvas.active {
+    left: 0;
+}
+
+.ocf-offcanvas .ocfilter-mobile-handle {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    z-index: 10;
+}
+
+.ocf-offcanvas .ocfilter-mobile-handle .btn {
+    border-radius: 0!important;
+    border: none!important;
+    background-color: transparent!important;
+    font-size: 18px;
+    line-height: 0;
+    padding: 8px;
+}
+
+.ocf-offcanvas .ocf-offcanvas-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

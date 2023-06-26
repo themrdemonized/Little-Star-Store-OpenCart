@@ -1,0 +1,77 @@
+{{ header }}
+<div id="product-stocks-products" class="container">
+  {% if products %}
+    <ul class="breadcrumb">
+      {% for breadcrumb in breadcrumbs %}
+      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      {% endfor %}
+    </ul>
+    <div class="flex-container flex-justify mobile-block">
+      <div class="product-heading stocks-product-heading flex-container">
+        <h1>{{ heading_title }}</h1>
+      </div>
+    </div>
+    {% if image %}
+      <div class="stocks-banner"><img src="{{ image }}" alt="{{ name }}"></div>
+    {% endif %}
+    {% if description or requirements %}
+      <div class="row">
+        <div class="col-sm-12">
+          <div id="description" class="product-container" itemprop="description">
+            <ul class="nav nav-tabs">
+              {% if description %}
+              <li class="active"><h2><a data-toggle="tab" href="#description-tab">Описание</a></h2></li>
+              {% endif %}
+              {% if requirements %}
+              <li {% if not description %} class="active" {% endif %}><h2><a data-toggle="tab" href="#composition-tab">Условия</a></h2></li>
+              {% endif %}
+            </ul>
+            <div class="tab-content">
+              {% if description %}
+              <div class="tab-pane active" id="description-tab">
+                <p>{{ description }}</p>
+              </div>
+              {% endif %}
+              {% if requirements %}
+              <div class="tab-pane {% if not description %} active {% endif %}" id="composition-tab">
+                <p>{{ requirements }}</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    {% if products %}
+      <div id="content" class="{{ class }}">{{ content_top }}
+        <div class="product-block stocks-product-block row">
+          {% for product in products %}
+            {% include 'default/template/common/product-thumb.twig' with {'home_layout': true} %}
+          {% endfor %}
+        </div>
+        <div class="row">
+          <div class="col-sm-6 text-left stocks-products-pagination">{{ pagination }}</div>
+          <div class="col-sm-6 text-right stocks-products-results">{{ results }}</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-sm-12">
+        <p>{{ text_empty }}</p>
+        <div class="buttons">
+          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        </div>
+      </div>
+    {% endif %}
+    {{ content_bottom }}</div>
+  {{ column_right }}</div>
+</div>
+{{ footer }} 

@@ -1,0 +1,23 @@
+<modification>
+	<id>VQMod Manager Menu Shortcut</id>
+	<version>3.2.0</version>
+	<vqmver>2.3.0</vqmver>
+	<author>Matteo Grobberio (matteo.grobberio@gmail.com)</author>
+	<file name="admin/controller/common/column_left.php">
+		<operation error="skip">
+			<search position="before"><![CDATA[
+		$report = array();
+]]></search>
+			<add><![CDATA[
+
+			$data['menus'][] = array(
+					'id'       => 'menu-vqmod-manager',
+					'icon'	   => 'fa-cog',
+					'name'	   => 'Vqmod Manager',
+					'href'     =>  $this->url->link('extension/module/vqmod_manager', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'children' => array()
+				);
+]]></add>
+		</operation>
+	</file>
+</modification>

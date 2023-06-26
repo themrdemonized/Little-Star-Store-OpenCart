@@ -1,0 +1,149 @@
+<div id="stock_warning">
+{% if error_warning_stock %}
+	<div class="alert alert-danger" style=""><i class="fa fa-exclamation-circle"></i> {{ error_stock }}</div>
+{% endif %}
+</div>
+<div class="product-heading flex-container">
+	<h1>Корзина</h1>
+	<span class="header-3 text-icon">{{ count }} {% if (count % 100 >= 11 and count % 100 <= 19) or count % 10 >= 5 or count % 10 == 0 %}товаров{% elseif count % 10 == 1 %}товар{% else %}товара{% endif %}</span>
+</div>
+<table class="table quickcheckout-cart">
+  {% if products or vouchers %}
+	<tbody>
+      {% for product in products %}
+        <tr class="qc-block{% if not product.stock %} warning {% endif %}">
+          <td class="image"> 
+            <a href="{{ product.href }}">
+            	{% if product.thumb %}
+            		<img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" />
+				{% else %}
+					<img src="image/placeholder.png" alt="{{ product.name }}" title="{{ product.name }}" />
+				{% endif %}
+            </a>
+          </td>
+          <td class="name">
+			<div class="flex-container flex-center">
+				<div class="flex">
+		          	<div>
+		          		{% if product.model %}<p class="caption text-icon">{{ product.model }}</p>{% endif %}
+			          	<p>{{ product.name }}</p>
+			          	{% if not product.stock %} <span class="text-danger">***</span> {% endif %}
+		          	</div>
+		            <div>
+		              {% for option in product.option %} 
+		              <small>{{ option.name }}: {{ option.value }}</small><br />
+					  {% endfor %}
+					  {% if product.reward %} 
+					  <br />
+					  <small>{{ product.reward }}</small>
+					  {% endif %}
+					  {% if product.recurring %} 
+					  <br />
+					  <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small>
+					  {% endif %}
+					  <small class="{{ product.id }}-product-warehouse" style="display: block; margin-top: 16px;"></small>
+					  <script>
+					  	function get_warehouse_info() {
+						    $.ajax({
+						      url: 'index.php?route=product/product_warehouse',
+						      type: 'POST',
+						      data: {product_id: '{{ product.id }}', option_value_id: '{{ product.option[0].option_value_id }}'},
+						      dataType: 'JSON',
+						      beforeSend: function() {
+						        $('.{{ product.id }}-product-warehouse').html('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
+						      },
+						      success: function(json) {
+						        if (json) {
+						          if (json['warehouses']) {
+						          	var warehouses = "";
+						            $.each(json['warehouses'], function(index, el) {
+						              let s = [];
+						              if (el['name']) {
+						              	s.push(el['name']);
+						              }
+						              if (el['address']) {
+						              	s.push(el['address']);
+						              }
+						              if (el['quantity']) {
+						              	if (el['quantity'] > 0) {
+						              		s.push(el['quantity'] + " шт.");
+						              	} else {
+						              		s.push("Нет в наличии");
+						              	}
+						              } else {
+						              	s.push("Нет в наличии");
+						              }
+						              warehouses += `<p>${s.join(", ")}</p><br>`;
+						          	});
+						          	$('.{{ product.id }}-product-warehouse').html(warehouses);
+								  }
+								}
+						      },
+						      error: function(jqXHR, textStatus, errorThrown) {
+						        console.log(jqXHR);
+						        console.log(textStatus);
+						        console.log(errorThrown);
+						      }
+						    });
+						}
+						get_warehouse_info();
+					  </script>
+		            </div>
+		            <div class="quantity mobile flex-container">
+			            {% if edit_cart %} 
+					    <div class="product-buy-quantity flex-container flex-center">
+					    	<button class="button-update btn-minus" data-type="decrease" data-product="{{ product.key }}"></button>
+					    	<input type="number" data-mask="9?999999999999999" value="{{ product.quantity }}" class="qc-product-qantity form-control text-center caption" name="quantity[{{ product.key }}]">
+					    	<button class="button-update btn-plus" data-type="increase" data-product="{{ product.key }}"></button>
+						</div>
+						{% else %}
+						x&nbsp;{{ product.quantity }} 
+						{% endif %}
+					</div>
+					<div class="header-2 mobile">
+						{{ product.total }}
+					</div>
+				</div>
+				<div>
+					<div class="total mobile">
+						 <span class="input-group-btn" style="display: inline-block;"><button class="button-remove transparent" data-product="{{ product.key }}" data-remove="{{ product.key }}" title="{{ button_remove }}"><img src="image/src/ic-disable.svg" alt="Удалить" style="width: 32px;"></button></span>
+					</div>
+				</div>
+			</div>
+          </td>
+          <td class="quantity hide-mobile">{% if edit_cart %} 
+		    <div class="product-buy-quantity flex-container flex-center">
+		    	<button class="button-update btn-minus" data-type="decrease" data-product="{{ product.key }}"></button>
+		    	<input type="number" data-mask="9?999999999999999" value="{{ product.quantity }}" class="qc-product-qantity form-control text-center caption" name="quantity[{{ product.key }}]">
+		    	<button class="button-update btn-plus" data-type="increase" data-product="{{ product.key }}"></button>
+			</div>
+			{% else %}
+			x&nbsp;{{ product.quantity }} 
+			{% endif %}</td>
+		  <td class="price header-2 hide-mobile">{{ product.total }}</td>
+		  <td class="total hide-mobile"><span class="input-group-btn"><button class="button-remove transparent" data-product="{{ product.key }}" data-remove="{{ product.key }}" title="{{ button_remove }}"><img src="image/src/ic-disable.svg" alt="Удалить" style="width: 32px;"></button></span></td>
+        </tr>
+        {% endfor %}
+        {% for voucher in vouchers %} 
+        <tr>
+          <td class="image"></td>
+          <td class="name">{{ voucher.description }}</td>
+          <td class="quantity">x&nbsp;1</td>
+		  <td class="price1">{{ voucher.amount }}</td>
+          <td class="total">{{ voucher.amount }}</td>
+        </tr>
+        {% endfor %} 
+	</tbody>
+  {% endif %}
+</table>
+<div id="totals-wrap" class="qc-block">
+	<h2>Итого {{ count }} {% if (count % 100 >= 11 and count % 100 <= 19) or count % 10 >= 5 or count % 10 == 0 %}товаров{% elseif count % 10 == 1 %}товар{% else %}товара{% endif %}</h2>
+	{% for total in totals %} 
+	<div class="total-wrap">
+	  <div class="flex-container">
+	  	<p class="flex">{{ total.title }}</p>
+	  	<p class="header-2">{% if total.text|number_format == 0 %}Рассчитывается менеджером{% else %}{{ total.text }}{% endif %}</p>
+	  </div>
+	</div>
+    {% endfor %}
+</div>

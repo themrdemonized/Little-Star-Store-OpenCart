@@ -1,0 +1,270 @@
+{{ header }}
+<link rel="stylesheet" type="text/css" href="view/stylesheet/{{ stylesheet }}.css" />
+
+{{ column_left }} 
+
+<div id="content" class="{{ extension }}">
+
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-{{ extension }}" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <button onclick="$('#apply').attr('value', '1'); $('#form-{{ extension }}').submit();" form="form-{{ extension }}" data-toggle="tooltip" title="{{ button_apply }}" class="btn btn-success"><i class="fa fa-check"></i></button>
+            <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+        </div>
+          <h1>{{ heading_title }}</h1>
+          <ul class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %} 
+              <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %} 
+          </ul>
+      </div>
+    </div>
+  <div class="container-fluid">
+    {% if errors %} 
+      {% for error in errors %} 
+        <div class="alert alert-danger">
+            <i class="fa fa-exclamation-circle"></i> {{ error }} 
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+      {% endfor %}
+     {% elseif  success %} 
+      <div class="alert alert-success">
+        <i class="fa fa-check-circle"></i> {{ success }} 
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+        
+      </div>
+      <div class="panel-body">
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-{{ extension }}" class="form-horizontal">
+              <input type="hidden" name="apply" id="apply" value="0">
+    
+              <!-- Extension specific code -->
+                      
+                <div class="form-group buttons">
+                  <label class="col-sm-2 control-label" for="input-buttons">
+                    {% if help_buttons %} 
+                      <span data-toggle="tooltip" title="{{ help_buttons }}">
+                    {% endif %} 
+                    {{ entry_buttons }} 
+                    {% if help_buttons %} 
+                      </span>
+                    {% endif %} 
+                  </label>
+            <div class="col-sm-10">                     
+                      <div class="well well-sm" style="height: 100px; overflow: auto;">
+                        {% for button, name in buttons %}  
+                          <div class="checkbox item-name">
+                            <label>
+                                <input type="checkbox" name="module_manager_buttons[]" id="input-buttons" class="form-control" value="{{ button }}"{% if button in module_manager_buttons %}{{ ' checked="checked"'}} {% endif %} />{{ name }} 
+                              </label>
+                          </div>
+                        {% endfor %} 
+                      </div>
+                      <div class="checkbox-select">
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group columns">
+                  <label class="col-sm-2 control-label" for="input-columns">
+                    {% if help_columns %} 
+                      <span data-toggle="tooltip" title="{{ help_columns }}">
+                    {% endif %} 
+                    {{ entry_columns }} 
+                    {% if help_columns %} 
+                      </span>
+                    {% endif %} 
+                  </label>
+            <div class="col-sm-10">                     
+                      <div class="well well-sm" style="height: 100px; overflow: auto;">
+                        {% for column, name in columns %}  
+                          <div class="checkbox item-name">
+                            <label>
+                                <input type="checkbox" name="module_manager_columns[]" id="input-columns" class="form-control" value="{{ column }}"{% if column in module_manager_columns %}{{ ' checked="checked"'}}{% endif %} />{{ name }} 
+                              </label>
+                          </div>
+                        {% endfor %} 
+                      </div>
+                      <div class="checkbox-select">
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group statuses">
+                  <label class="col-sm-2 control-label" for="input-statuses">
+                    {% if help_statuses %} 
+                      <span data-toggle="tooltip" title="{{ help_statuses }}">
+                    {% endif %} 
+                    {{ entry_statuses }} 
+                    {% if help_statuses %} 
+                      </span>
+                    {% endif %} 
+                  </label>
+            <div class="col-sm-10">                     
+                      <div class="well well-sm" style="height: 100px; overflow: auto;">
+                        {% for key, item in module_manager_statuses %}  
+                          <div class="checkbox item-name">
+                            <label>
+                                <input type="checkbox" name="module_manager_statuses[{{ key }}][checked]" id="input-statuses" value="1" class="form-control"{% if item.checked  and  item.checked %} {{ ' checked="checked"' }}{% endif %}  />{{ item.name }} 
+                              </label>
+                          </div>
+                          <div class="item-color">
+                              <input type="text" name="module_manager_statuses[{{ key }}][color]" class="form-control" value="{{ item.color }}" placeholder="{{ text_color }}"/>
+                            </div>  
+                          {% endfor %}
+                      </div>
+                      <div class="checkbox-select">
+                <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group payments">
+                  <label class="col-sm-2 control-label" for="input-payments">
+                    {% if help_payments %} 
+                      <span data-toggle="tooltip" title="{{ help_payments }}">
+                    {% endif %} 
+                    {{ entry_payments }} 
+                    {% if help_payments %} 
+                      </span>
+                    {% endif %} 
+                  </label>
+            <div class="col-sm-10">                     
+                      <div class="well well-sm" style="height: 100px; overflow: auto;">
+                        {% for key, item in module_manager_payments %}  
+                          <div class="item-name">
+                              {{ item.name }} 
+                            </div>
+                  <div class="item-color">
+                              <input type="text" name="module_manager_payments[{{ key }}][color]" id="input-payments" class="form-control" value="{{ item.color }}" placeholder="{{ text_color }}"/>
+                            </div>
+                        {% endfor %} 
+                      </div>
+            </div>
+          </div>
+          <div class="form-group shippings">
+                  <label class="col-sm-2 control-label" for="input-shippings">
+                    {% if help_shippings %} 
+                      <span data-toggle="tooltip" title="{{ help_shippings }}">
+                    {% endif %} 
+                    {{ entry_shippings }} 
+                    {% if help_shippings %} 
+                      </span>
+                    {% endif %} 
+                  </label>
+            <div class="col-sm-10">                     
+                      <div class="well well-sm" style="height: 100px; overflow: auto;">
+                        {% for key, item in module_manager_shippings %}  
+                          <div class="item-name">
+                              {{ item.name }} 
+                            </div>
+                  <div class="item-color">
+                              <input type="text" name="module_manager_shippings[{{ key }}][color]" id="input-shippings" class="form-control" value="{{ item.color }}" placeholder="{{ text_color }}"/>
+                            </div>
+                        {% endfor %} 
+                      </div>
+            </div>
+          </div>
+            
+              <!-- Generic code -->
+            
+              {% for key, type in options %}  
+                {% set key_id = key|replace({'_': '-'}) %} 
+                {% if type == 'title' %} 
+                      <h2>{{ attribute(_context, 'module_manager_'~key) }}</h2>
+                {% elseif  type == 'hidden' %} 
+                    <input type="hidden" name="{{ 'module_manager_'~key }}" value="{{ attribute(_context, 'module_manager_'~key) }}" />
+                {% else %}   
+                    <div class="form-group {{ 'module_manager-'~key_id }}">
+                      <label class="col-sm-2 control-label" for="input-{{ key_id }}">
+                        {% if attribute(_context, 'help_'~key) %}
+                          <span data-toggle="tooltip" title="{{ attribute(_context, 'help_'~key) }}">
+                        {% endif %} 
+                        {{ attribute(_context, 'entry_'~key) }} 
+                        {% if attribute(_context, 'help_'~key) %}
+                          </span>
+                        {% endif %}   
+                      </label>
+                <div class="col-sm-10">
+                  {% if type == 'text' %} 
+                    <span id="input-{{ key_id }}" class="input-text">
+                      {{ attribute(_context, 'module_manager_'~key) }}
+                    </span>
+                  {% elseif  type == 'date' %} 
+                    <div class="input-group date">
+                      <input type="text" name="{{ 'module_manager_'~key }}" value="{{ attribute(_context, 'module_manager_'~key) }}" placeholder="{{ attribute(_context, 'entry_'~key) }}" id="input-{{ key_id }}" data-date-format="YYYY-MM-DD" class="form-control" />
+                      <span class="input-group-btn">
+                          <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+                      </span>
+                    </div>
+                  {% elseif  type == 'input'  or  type == 'multi-input' %} 
+                    {% if type == 'multi-input' %} 
+                              {% for language in languages %} 
+                                <div class="input-group">
+                                  <span class="input-group-addon"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language.name }}" /></span>
+                                  <input type="text" name="{{ 'module_manager_'~key }}[{{ language.language_id }}]" value="{% if attribute(_context, 'module_manager_'~key)[language.language_id] %}{{ attribute(_context, 'module_manager_'~key)[language.language_id] }}{% endif %}" placeholder="{{ attribute(_context, 'entry_'~key) }}" id="input-{{ key_id }}" class="form-control" />
+                                </div>
+                                {% if error_name[language.language_id] %} 
+                                  <div class="text-danger">{{ error_name[language.language_id] }}</div>
+                                {% endif %} 
+                              {% endfor %} 
+                    {% else %}   
+                        <input type="text" name="{{ 'module_manager_'~key }}" value="{{ attribute(_context, 'module_manager_'~key) }}" placeholder="{{ attribute(_context, 'entry_'~key) }}" id="input-{{ key_id }}" class="form-control" />
+                    {% endif %}       
+                  {% elseif  type == 'textarea' %} 
+                            <textarea name="module_manager_{{ key }}" placeholder="{{ attribute(_context, 'entry_'~key) }}" id="input-{{ key_id }}" class="form-control">{{ attribute(_context, 'module_manager_'~key) }}'</textarea>
+                  {% elseif  type == 'select' %} 
+                            <select name="{{ 'module_manager_'~key }}" id="input-{{ key_id }}" class="form-control">
+                              {% for item in attribute(_context, key) %} 
+                                <option value="{{ item.0 }}"{% if item.0 == attribute(_context, 'module_manager_'~key) %}{{ ' selected="selected"' }}{% endif %}>{{ item.1 }}</option>
+                              {% endfor %}
+                            </select>
+                  {% elseif  type == 'checkbox' %} 
+                            <div class="well well-sm" style="height: 100px; overflow: auto;">
+                              {% for item in attribute(_context, key) %} 
+                                <div class="checkbox">
+                                    <label>
+                                      <input type="checkbox" name="{{ 'module_manager_'~key }}[]" value="{{ item.0 }}"{% if item.0 in attribute(_context, 'module_manager_'~key) %}{{ ' checked="checked"'}}{% endif %}  /> {{ item.1 }} 
+                                    </label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                            <div class="checkbox-select">
+                              <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+                            </div>
+                  {% elseif  type == 'autocomplete' %} 
+                            <input type="text" name="autocomplete_{{ key }}" value="" placeholder="{{ attribute(_context, 'entry_'~key) }}" id="input-{{ key_id }}" class="form-control" />
+                              <div id="{{ 'module_manager-'~key_id }}" class="well well-sm autocomplete" style="height: 150px; overflow: auto;">
+                                {% for item in key %} 
+                                  <div id="{{ 'module_manager-'~key_id~'-'~item.0 }}">
+                                    <i class="fa fa-minus-circle"></i> {{ item.1 }} 
+                                      <input type="hidden" name="{{ 'module_manager_'~key }}[]" value="{{ item.0 }}" />
+                                  </div>
+                                {% endfor %} 
+                              </div>
+                  {% elseif  type == 'radio' %} 
+                          <label class="radio-inline">
+                              <input type="radio" name="{{ 'module_manager_'~key }}" value="1"{% if attribute(_context, 'module_manager_'~key) %}{{ ' checked="checked"' }}{% endif %}/>{{ text_yes }} 
+                            </label>
+                            <label class="radio-inline">
+                              <input type="radio" name="{{ 'module_manager_'~key }}" value=""{% if not attribute(_context, 'module_manager_'~key) %}{{ ' checked="checked"' }}{% endif %}/>{{ text_no }} 
+                          </label>
+                  {% endif %}           
+                </div>
+                    </div>
+                {% endif %}   
+               {% endfor %}  
+          
+              </form>
+        <div class="copyright">Еще больше модулей и шаблонов для Opencart 3.x <a href="https://opencart3x.ru/">на нашем сайте</a>!</div>                
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{ footer }} 

@@ -1,0 +1,35 @@
+public_html/image/cache/
+public_html/image/catalog/trade_import/
+public_html/records.json
+public_html/admin/records.json
+
+.DS_Store
+node_modules
+/dist
+/public/documents
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+kiradev.config.js
+
+# Docker files
+build_and_deploy.cmd
+.setup/
+000_copy_config_and_build.ps1

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&amp;subset=cyrillic" rel="stylesheet">
+<style>
+  h1, p {
+    margin: 0;
+  }
+</style>
+<title>{{ title }}</title>
+</head>
+<body style="font-family: 'verdana', sans-serif; font-size: 18px; font-weight: 500; line-height: 25px; color: #000; background-color: #e5e5e5; overflow: auto; padding: 0 16px;">
+<div style="min-width: 375px; max-width: 900px; width: 100%; margin: 0 auto; padding: 80px 0;">
+  <div style="display: table; width: 100%; margin-bottom: 30px;">
+    <div style="display: table-cell; width: 50%; vertical-align: middle;">
+      <a href="{{ store_url }}" title="{{ store_name }}">
+        <img src="{{ logo }}" alt="{{ store_name }}" style="border: none; height: 63px;" />
+      </a>
+    </div>
+    <div style="display: table-cell; width: 50%; vertical-align: middle; text-align: right; line-height: 22px;">
+      <p>{{ store_phone }}<br>{{ store_email }}</p>
+    </div>
+  </div>
+  <div style="background-color: #fff; padding: 30px; margin-bottom: 20px;">
+    <div style="text-align: center;">
+      <h1 style="margin: 0; font-size: 30px; line-height: 37px;">Спасибо!</h1>
+      <p style="margin: 0;">мы свяжемся с вами для уточнения заказа</p>
+    </div>
+    <div style="margin-top: 60px;">
+      <div style="display: table; font-weight: bold; width: 100%; margin-bottom: 48px;">
+        <div style="display: table-cell; width: 50%; vertical-align: middle;">
+          Заказ №{{ order_id }}
+        </div>
+        <div style="display: table-cell; width: 50%; vertical-align: middle; text-align: right;">
+          {{ date_added }}
+        </div>
+      </div>
+      <div style="display: table; width: 100%; margin-bottom: 60px; font-weight: bold; line-height: 2em;">
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            Имя и фамилия: {{ payment_address_fields.firstname }}
+          </div>
+        </div>
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            E-mail: {{ email }}
+          </div>
+        </div>
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            Телефон: {{ telephone }}
+          </div>
+        </div>
+        {% if payment_address_fields.company %}
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            ИНН компании: {{ payment_address_fields.company }}
+          </div>
+        </div>
+        {% endif %}
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            Адрес: {{ payment_address_fields.address_1 }}
+          </div>
+        </div>
+        <div style="display: table-row;">
+          <div style="display: table-cell; width: 100%; vertical-align: middle;">
+            {{ order_comment }}
+          </div>
+        </div>
+      </div>
+      <div style="display: table; width: 100%; margin-bottom: 40px; line-height: 1.5em;">
+        <div style="display: table-header-group;">
+          <strong style="font-size: 16px; padding: 8px 0; display: table-cell; vertical-align: middle; white-space: nowrap;">{{ text_product }}</strong>
+          <strong style="font-size: 16px; padding: 8px 6px; display: table-cell; vertical-align: middle; white-space: nowrap;">Кол-во</strong>
+          <strong style="font-size: 16px; padding: 8px 6px; display: table-cell; vertical-align: middle; white-space: nowrap;">{{ text_price }}</strong>
+          <strong style="font-size: 16px; padding: 8px 0; display: table-cell; vertical-align: middle; white-space: nowrap; text-align: right;">{{ text_total }}</strong>
+        </div>
+        {% for product in products %}
+        <div style="display: table-row;">
+          <p style="font-size: 14px; padding: 8px 0; display: table-cell; vertical-align: middle;">{{ product.name }} {% for option in product.option %}<br /><small>{{ option.name }}: {{ option.value }}</small>{% endfor %}</p>
+          <p style="font-size: 14px; padding: 0 6px; display: table-cell; vertical-align: middle;">{{ product.quantity }}</p>
+          <p style="font-size: 14px; padding: 0 6px; display: table-cell; vertical-align: middle; white-space: nowrap;">{% if product.price_old > product.price %}<span style="color: rgba(0, 0, 0, 0.38); text-decoration: line-through; white-space: nowrap;">{{ product.price_old }}</span><br>{% endif %}{{ product.price }}</p>
+          <p style="font-size: 14px; padding: 8px 0; display: table-cell; vertical-align: middle; text-align: right; white-space: nowrap;">{{ product.total }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="display: table; width: 100%; margin-bottom: 20px; line-height: 2em;">
+        {% for total in totals %}
+        <div style="display: table-row;">
+          <p style="display: table-cell; vertical-align: middle;">{{ total.title }}</p>
+          <p style="display: table-cell; vertical-align: middle; text-align: right; white-space: nowrap;">{{ total.text }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div style="text-align: center; font-size: 14px; line-height: 20px; color: #888;">
+    <p>Вы получили это письмо, потому что оформили заказ на сайте {{ store_url }}</p>
+  </div>
+</div>
+</body>
+</html>

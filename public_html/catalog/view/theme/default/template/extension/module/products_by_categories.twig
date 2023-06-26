@@ -1,0 +1,59 @@
+<div id="products-by-categories">
+  {% for category in categories %}
+    <div class="{% if swiper %}swiper-viewport{% endif %}">
+      <div class="category-heading flex-container flex-center flex-justify">
+          <a href="{{ category.href }}" class="watch-all cneterArrow">{{ category.name }}</a>
+      </div>
+      <div class="row">
+        <div class="{% if swiper %}swiper-container products-by-categories-swiper{% endif %}">
+          <div class="{% if swiper %}swiper-wrapper{% endif %}">  
+            {% for product in category.products %}
+              <div class="{% if swiper %}swiper-slide{% endif %}">
+                  {% include 'default/template/common/product-thumb.twig' with {'home_layout': true} %}
+              </div>
+            {% endfor %}
+          </div>
+        {% if swiper %}
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% if swiper %}
+  <style>
+    #products-by-categories .product-layout {
+      width: 100%!important;
+    }
+    #products-by-categories .swiper-container {
+      padding-top: 9px;
+      padding-bottom: 9px;
+    }
+  </style>
+  <script>
+    var products_by_categories_swiper = new Swiper('.products-by-categories-swiper', {
+      spaceBetween: 3.5,
+      slidesPerView: 2,
+      autoHeight: true,
+      slidesOffsetAfter: 32,
+      breakpoints: {
+        // when window width is >= 768px
+        768: {
+          spaceBetween: 6,
+          slidesPerView: 3.5,
+        },
+        992: {
+          spaceBetween: 6,
+          slidesPerView: 4.5
+        }
+      },
+      watchOverflow: true,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      }
+    });
+  </script>
+{% endif %}

@@ -1,0 +1,1020 @@
+
+.order-manager
+{
+    margin-bottom: 20px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 150%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.order-manager *
+{
+    box-sizing: border-box;
+}
+
+.order-manager .center
+{
+	text-align: center;
+}
+
+.order-manager .nowrap
+{
+	white-space: nowrap;
+}
+
+.order-manager .unspecified
+{
+    opacity: 0.4;
+}
+
+.order-manager input,
+.order-manager select,
+.order-manager textarea
+{
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    padding: 0 5px !important;
+}
+
+.order-manager .empty
+{
+    display: table-row;
+    height: 42px;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+
+.order-manager .empty > div
+{
+    display: table-cell;
+    height: 22px;
+    line-height: 22px;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.order-manager .toggle-all,
+.order-manager .edit-customer
+{
+    float: right;
+    display: block;
+    text-align: center;
+}
+
+.order-manager .fa
+{
+    cursor: pointer;
+    line-height: 22px;
+    opacity: 0.8;
+    background: #555555;
+    border-radius: 3px;
+    color: #ffffff;
+    margin: 0 1px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+}
+
+.order-manager .fa.sort
+{
+    cursor: pointer;
+    line-height: 100%;
+    opacity: 0.8;
+    background: transparent;
+    border-radius: 0;
+    color: inherit;
+    margin-left: 5px;
+    width: auto;
+    height: auto;
+}
+
+.order-manager .fa:hover
+{
+	opacity: 1.0;
+}
+
+.order-manager .fa.white
+{
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    color: #555555;
+}
+
+.order-manager .fa.green
+{
+    background: #75a74d;
+    border: 1px solid #75a74d;
+}
+
+.order-manager .fa.blue
+{
+    background: #1978ab;
+    border: 1px solid #1978ab;
+}
+
+.order-manager .fa.red
+{
+    background: #f23b3b;
+    border: 1px solid #f23b3b;
+}
+
+.order-manager .fa.orange
+{
+    background: #f38733;
+    border: 1px solid #f38733;
+}
+
+.order-manager a.pencil 
+{
+    line-height: 24px;
+}
+
+.order-manager .fa.fa-pencil 
+{
+	font-size: 100%;
+    background: #1978ab;
+    border: 1px solid #1978ab;
+    color: #ffffff;
+}
+
+.order-manager .disabled .fa
+{
+    background: #eeeeee !important;
+    cursor: default !important;
+    border: 1px solid #cccccc;
+    color: #555555;
+}
+
+.order-manager .orders-header
+{
+   	background: #fcfcfc;
+    border: 1px solid #e8e8e8;
+    border-top: 2px solid #e8e8e8;
+    padding: 10px;
+    width: 100%;
+    display: table;
+}
+
+.order-manager .orders-header h2
+{
+    border: none !important;
+    display: table-cell;
+    text-align: left;
+    font-size: 20px !important;
+    font-weight: normal !important;
+    line-height: 32px;
+    margin: 0;
+    color: #595959 !important;
+    width: 20%;
+}
+
+.order-manager .orders-header h2 i
+{
+	color: #595959;
+	margin-right: 5px;
+	cursor: default;
+}
+
+.order-manager .orders-header .manager-notice
+{
+    background: #00a3d9;
+    border: 1px solid #00a3d9;
+    border-radius: 3px;
+    color: #ffffff;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 60%;
+    opacity: 0.8;
+}
+
+.order-manager .orders-header .manager-notice .fa
+{
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	color: #555555;
+	cursor: default;
+	width: 24px;
+	height: 24px;
+	line-height: 24px;
+	font-size: 20px;
+}
+
+.order-manager .orders-header .manager-notice span
+{
+    display: inline-block;
+    line-height: 24px;
+    vertical-align: middle;
+}
+
+.order-manager .orders-buttons
+{
+    display: table-cell;
+    text-align: right;
+    width: 20%;
+}
+
+.order-manager .orders-header .manager-notice a
+{
+    color: #fff600;
+    cursor: pointer;
+}
+
+.order-manager .orders-buttons > a,
+.order-manager .orders-buttons > span
+{
+	opacity: 0.8;
+}
+
+.order-manager .orders-buttons > a:hover,
+.order-manager .orders-buttons > span:hover
+{
+	opacity: 1.0;
+}
+
+.order-manager .orders-buttons > a.disabled,
+.order-manager .orders-buttons > a.disabled:hover,
+.order-manager .orders-buttons > span.disabled,
+.order-manager .orders-buttons > span.disabled:hover
+{
+    opacity: 0.6 !important;
+}
+
+.order-manager .orders-header .fa
+{
+    height: 32px;
+    line-height: 32px;
+    width: 32px;
+    opacity: 1.0;
+}
+
+.order-manager h2 .fa-list
+{
+    background: none !important;
+    color: #1978ab;
+}
+
+.order-manager .show-more
+{
+	cursor: pointer;
+	text-decoration: underline;
+}
+			
+.order-manager .more
+{
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    line-height: 150%;
+    margin-top: 5px;
+}
+			
+.order-manager .more > div
+{
+	padding: 5px;
+}
+			
+.order-manager .more ul
+{			
+    margin: 0 0 0 20px;
+    padding: 0;
+}
+
+.order-manager .more .options
+{
+	display: block;
+	font-size: 90%;
+}
+			
+.order-manager .pagination
+{
+   	height: 36px;
+    margin: 0;
+	border-top: none !important;
+}
+
+.order-manager .orders-table
+{
+    width: 100%;
+    display: table;
+	border: 1px solid #e8e8e8;    
+    border-bottom: 4px solid #e8e8e8;
+}
+
+.order-manager .table-header
+{
+	width: 100%;
+	color: #555555;
+	border-bottom: none;
+    background: #eeeeee;
+    display: table-row;
+}
+
+.order-manager .table-header > div
+{
+    padding: 5px;
+    font-weight: 700;
+    height: 24px;
+    line-height: 24px;
+    display: table-cell;
+    vertical-align: middle;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.order-manager .table-header > div a
+{
+	text-decoration: none;
+}
+
+.order-manager .table-header > div input,
+.order-manager .order-filters > div select
+{
+	margin: 0;
+	padding: 0;
+}
+
+.order-manager .order-filters
+{
+	width: 100%;
+	color: #555555;
+	border-bottom: none;
+    background: #f5f5f5;
+    display: table-row;
+    font-size: 90%;
+}
+
+.order-manager .order-filters > div
+{
+    display: table-cell;
+    padding: 5px;
+    height: 25px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.order-manager .order-filters > div input,
+.order-manager .order-filters > div select
+{
+    height: 26px;
+    line-height: 24px;
+    margin: 0;
+    width: 100% !important;
+}
+
+.order-manager .order-row
+{
+	width: 100%;
+	color: #555555;
+	display: table-row;
+	background: #fafafa;
+}
+
+.order-manager .order-row.changed
+{
+    background: #ebf5e9;	
+}
+
+.order-manager .order-row.changed .order-status-id > span
+{
+    color: inherit !important;
+    font-weight: 700;	
+}
+
+.order-manager .order-row:hover
+{
+	background: #ffffff;
+}
+
+.order-manager .order-row > div
+{
+    border-bottom: 1px solid #ffffff;
+    display: table-cell;
+    height: auto;
+    width: auto;
+    font-size: 90%;
+    line-height: 24px;
+    min-height: 24px;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.order-manager .order-row > div input,
+.order-manager .order-row > div select
+{
+    margin: 0;
+    padding: 0;
+}
+
+.order-manager .orders-table .select
+{
+    width: 1%;
+    min-width: 20px;
+}
+
+.order-manager .orders-table .select > input
+{
+    cursor: pointer;
+    float: none;
+    display: block;
+}
+
+.order-manager .orders-table .order-id
+{
+    width: 3%;
+    min-width: 50px;
+}
+
+.order-manager .orders-table .order-status-id
+{
+    width: 11%;
+    min-width: 110px;
+}
+
+.order-manager .orders-table .order-row .order-status-id > i
+{
+    float: right;
+}
+
+.order-manager .orders-table .customer
+{
+    width: 13%;
+    min-width: 130px;
+}
+
+.order-manager .orders-table .recipient
+{
+    width: 13%;
+    min-width: 130px;
+}
+
+.order-manager .orders-table .products
+{
+    width: 13%;
+    min-width: 130px;
+}
+
+.order-manager .orders-table .date-added
+{
+    width: 6%;
+    min-width: 50px;
+}
+
+.order-manager .orders-table .date-modified
+{
+    width: 6%;
+    min-width: 50px;
+}
+
+.order-manager .orders-table .payment
+{
+    width: 12%;
+    min-width: 120px;
+}
+
+.order-manager .orders-table .shipping
+{
+    width: 12%;
+    min-width: 120px;
+}
+
+.order-manager .orders-table .subtotal
+{
+    width: 5%;
+    min-width: 50px;
+}
+
+.order-manager .orders-table .total
+{
+    width: 5%;
+    min-width: 50px;
+}
+
+.order-manager .orders-table .actions
+{
+    background: #efefef;
+    color: #555555;
+    min-width: 50px;
+    width: 5%;
+}
+
+.order-manager .ocstatuses
+{
+	float: left;
+	width: auto !important;
+	height: 26px;
+}
+
+/* Pagination */
+
+.order-manager .manager-pagination
+{
+   	background: #fcfcfc none repeat scroll 0 0;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+    padding: 10px 0;
+    display: table;
+    width: 100%;
+}
+
+.order-manager .manager-pagination .links
+{
+    display: table-cell;
+    padding-left: 10px;
+    width: 45%;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.order-manager .manager-pagination .links a,
+.order-manager .manager-pagination .links span
+{
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    display: block;
+    color: #1e91cf;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 0;
+   	height: 36px;
+   	width: 36px;
+    line-height: 34px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+}
+
+.order-manager .manager-pagination .links span:first-child,
+.order-manager .manager-pagination .links a:first-child
+{
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    margin-left: 0;
+}
+
+.order-manager .manager-pagination .links span:last-child,
+.order-manager .manager-pagination .links a:last-child
+{
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.order-manager .manager-pagination .links a:hover
+{
+    background-color: #eeeeee;
+    border-color: #dddddd;
+    color: #14628c;
+}
+
+.order-manager .manager-pagination .links span
+{
+   	background: #1e91cf;
+    border-color: #1b81b9;
+    color: #ffffff;
+    cursor: default;
+    z-index: 2;
+}
+
+.order-manager .manager-pagination .limit
+{
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 10%;
+    text-align: center;
+}
+
+.order-manager .manager-pagination .limit > input
+{
+    height: 36px;
+    line-height: 34px !important;
+    margin: 0;
+    padding: 0 5px !important;
+    text-align: center;
+    width: 40px !important;
+}
+
+.order-manager .manager-pagination .limit > select
+{
+    height: 36px;
+    line-height: 34px !important;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.order-manager .manager-pagination .spacer
+{
+    border: 1px solid transparent;
+    float: left;
+    height: 36px;
+    width: 36px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.order-manager .manager-pagination .summary
+{
+    display: table-cell;
+    width: 45%;
+    vertical-align: middle;
+    padding-right: 10px;
+    text-align: right;
+}
+
+/* Tooltip */
+
+.order-manager .manager-tooltip
+{
+	outline: none;
+}
+
+.order-manager .manager-tooltip strong
+{
+	line-height: 30px;
+}
+
+.order-manager .manager-tooltip:hover
+{
+	text-decoration: none;
+} 
+
+.order-manager .manager-tooltip .container
+{
+    display: none;
+    background: #555555;
+    border: 1px solid #383838;
+    border-radius: 4px;
+    box-shadow: 0 0 3px #eeeeee;
+    color: #ffffff;
+    line-height: 125%;
+    margin-left: -115px;
+    padding: 10px;
+    position: absolute;
+    text-align: left;
+    width: 250px;
+    z-index: 10;    
+}
+
+.order-manager .manager-tooltip.comment .container
+{
+	text-align: center;
+}
+
+.order-manager .manager-tooltip .container span
+{
+    display: block;
+    float: left;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.order-manager .manager-tooltip .fa-times
+{
+    display: block;
+    float: right;
+    font-size: 12px;
+    line-height: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    padding: 0;
+    text-shadow: none;
+    width: auto;
+}
+
+.order-manager .manager-tooltip .arrow
+{
+	display: none;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #555555;
+    margin-left: 5px;
+    margin-top: -12px;
+    position: absolute;
+    height: 0;
+    width: 0;    
+    z-index: 11;
+}
+
+.order-manager .manager-tooltip.history-comment
+{
+    float: right;
+}
+
+.order-manager .manager-tooltip.comment
+{
+	float: right;
+}
+
+.order-manager .manager-tooltip:hover span.hover
+{
+    display: inline;
+}
+
+.order-manager .manager-tooltip:hover .arrow.hover
+{
+    display: block;
+}
+
+.order-manager .manager-tooltip input
+{
+    margin-bottom: 2% !important;
+    width: 100% !important;
+    color: #555555;
+    height: 24px;
+}
+
+.order-manager .manager-tooltip textarea
+{
+    width: 100% !important;
+    color: #555555;
+    padding: 5px !important;
+    height: 50px;
+}
+
+/* Settings */
+
+.manager *
+{
+    box-sizing: border-box;
+}
+
+.manager input[type="radio"],
+.manager .radio input[type="radio"], 
+.manager .radio-inline input[type="radio"]
+{
+    margin-right: 5px;
+}
+
+.manager .well
+{
+    height: 150px !important;
+}
+
+.manager .items
+{
+    width: 25%;
+    border: 1px solid #dddddd;
+    border-radius: 5px;    
+}
+
+.manager .item-container
+{
+ 	border-bottom: 1px dotted #dddddd;
+    width: 96%;
+    overflow: hidden;
+    padding: 2%;    
+}
+
+.manager .item-container:last-child
+{
+	border-bottom: none;
+}
+
+.manager .item-container:hover
+{
+	background: #eeeeee;
+}
+
+.manager .item-name
+{
+    float: left;
+    line-height: 24px;
+    overflow: hidden;
+    padding: 0 !important;
+    white-space: nowrap;
+    width: 69%;
+    margin: 2px 0;
+}
+
+.manager .item-name input
+{
+    float: left;
+    margin: 0 5px 0 0 !important;
+    padding: 0;
+}
+
+.manager .item-color
+{
+    float: right;
+    overflow: hidden;
+    padding: 0 !important;
+    text-align: right;
+    width: 20%;
+}
+
+.manager .item-color input
+{
+    float: none !important;
+    margin: 2px 0 !important;
+    padding: 5px !important;
+    text-align: center;
+    width: 100% !important;
+    height: 24px;
+}
+
+.manager td .checkbox-select
+{
+	clear: left;
+	float: left;
+}
+
+/* Generic styles */
+
+body *
+{
+    box-sizing: border-box;
+}
+
+.clearfix
+{
+	clear: both;
+}
+
+.version
+{
+	display: block;
+    line-height: 16px;
+    padding-left: 20px;
+}
+
+.version.latest
+{
+	color: #479401;
+	background: url("http://thekrotek.com/images/latest.png") no-repeat;
+}
+
+.version.future
+{
+	background: url("http://thekrotek.com/images/future.png") no-repeat;
+}
+
+.version.update
+{
+	color: #ca3510;
+	background: url("http://thekrotek.com/images/update.png") no-repeat;
+}
+
+table.form
+{
+    margin-bottom: 0;
+}
+    
+.copyright
+{
+	background: #1e91cf;
+	color: #ffffff;
+	font-size: 125%;
+	padding: 10px;
+	border-color: #1978ab;
+	border-radius: 3px;
+	margin-top: 20px;
+}
+
+.copyright a
+{
+	color: #fffc00;
+}
+
+td .checkbox-select
+{
+	margin-top: 10px;
+}
+
+.checkbox-select a
+{
+	cursor: pointer;
+}
+
+.radio-inline input[type='radio']
+{
+    line-height: 24px;
+    float: left;
+    margin-right: 5px;
+    margin-top: 1px;
+}
+
+.form-horizontal .control-label
+{
+    text-align: left;
+    padding-left: 20px;
+    font-size: 110%;
+    font-weight: normal;
+}
+
+.settings-title
+{
+    margin: 20px 0;
+}
+
+.scrollbox,
+td select,
+td input[type="text"]
+{
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    height: auto;
+    width: 250px !important;
+    margin: 0;
+    padding: 5px !important;
+    text-align: left;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}
+
+input[type="radio"]
+{
+    margin-right: 5px !important;
+}
+
+.scrollbox > div
+{
+    overflow: hidden;
+}
+
+.scrollbox
+{
+	height: 150px;
+}
+
+.table thead td span[data-toggle="tooltip"]::after,
+label.control-label span::after
+{
+    cursor: pointer;
+}
+
+.input-text
+{
+    display: block;
+    float: left;
+    line-height: 100%;
+    padding-top: 9px;
+}
+
+#input-cron-link span
+{
+    display: block;
+    line-height: 125%;
+    cursor: pointer;
+}
+
+#input-cron-link .cron-wget
+{
+    opacity: 0.4;
+}
+
+#input-cron-link .cron-wget:hover
+{
+    opacity: 1;
+}
+
+.opencart15 .update
+{
+    position: absolute;
+    margin-top: 10px;
+    right: 50px;
+}
+
+.opencart15 .copyright
+{
+	background: #666666 !important;
+	color: #ffffff !important;
+	border: none;
+	border-radius: 0;
+}
+
+.opencart15 td.copyright
+{
+	background: #efefef !important;
+	color: #222222 !important;
+	font-size: 100%;
+	padding: 7px;
+    border-bottom: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;	
+}
+
+.opencart15 td.copyright a
+{
+	color: #003366;
+}
+
+.opencart15 .scrollbox.autocomplete
+{
+    margin-top: 5px;
+}
+
+.cell-inner #container .content
+{
+	border: none
+	font-weight: normal
+	margin-bottom: 0
+	color: #337100;
+}

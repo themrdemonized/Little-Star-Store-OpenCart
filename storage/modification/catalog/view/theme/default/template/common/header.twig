@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if IE 8 ]><html dir="{{ direction }}" lang="{{ lang }}" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html dir="{{ direction }}" lang="{{ lang }}" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html dir="{{ direction }}" lang="{{ lang }}">
+<!--<![endif]-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{{ title }}</title>
+
+{% if noindex %}
+<!-- OCFilter Start -->
+<meta name="robots" content="noindex,nofollow" />
+<!-- OCFilter End -->
+{% endif %}
+      
+{% if robots %}
+<meta name="robots" content="{{ robots }}" />
+{% endif %}
+<base href="{{ base }}" />
+{% if description %}
+<meta name="description" content="{{ description }}" />
+{% endif %}
+{% if keywords %}
+<meta name="keywords" content="{{ keywords }}" />
+{% endif %}
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ og_url }}" />
+{% if og_image %}
+<meta property="og:image" content="{{ og_image }}" />
+{% else %}
+<meta property="og:image" content="{{ logo }}" />
+{% endif %}
+<meta property="og:site_name" content="{{ name }}" />
+<script src="catalog/view/javascript/jquery/jquery-3.5.1.min.js" type="text/javascript"></script>
+<link href="catalog/view/javascript/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script async type="text/javascript" src="catalog/view/javascript/jquery.mousewheel.min.js"></script>
+<script async type="text/javascript" src="catalog/view/javascript/jquery.plugin.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/jquery.ba-throttle-debounce.min.js"></script>
+<script type="text/javascript" src="catalog/view/javascript/jquery.mask.min.js"></script>
+<script async src="catalog/view/javascript/scripts.js"></script>
+<link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="catalog/view/theme/default/stylesheet/hamburgers.min.css">
+<link href="catalog/view/theme/default/stylesheet/stylesheet.css?v={{ random() }}" rel="stylesheet">
+{% for style in styles %}
+<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+{% endfor %}
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+<script src="catalog/view/javascript/common.js" type="text/javascript"></script>
+{% for link in links %}
+<link href="{{ link.href }}" rel="{{ link.rel }}" />
+{% endfor %}
+<link rel="apple-touch-icon" sizes="180x180" href="/image/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/image/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/image/icons/favicon-16x16.png">
+<link rel="manifest" href="/image/icons/site.webmanifest">
+<link rel="mask-icon" href="/image/icons/safari-pinned-tab.svg" color="#cca984">
+<meta name="msapplication-TileColor" content="#cca984">
+<meta name="theme-color" content="#cca984">
+{% for analytic in analytics %}
+{{ analytic }}
+{% endfor %}
+</head>
+{% set currentPath = og_url|split('/')|last ? og_url|split('/')|last|replace({'/': ''}) : og_url|trim('/')|split('/')|last|replace({'/': ''}) %}
+<body>
+<div itemscope itemtype="http://schema.org/Organization" style="display: none!important;">
+  <span itemprop="name">{{ name }}</span>
+  {% if schema_address %}
+    Контакты:
+    <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+      Адрес:
+      <span itemprop="addressCountry">{{ schema_address[0] }}</span>
+      <span itemprop="addressRegion">{{ schema_address[1] }}</span>
+      <span itemprop="addressLocality">{{ schema_address[2] }}</span>
+      <span itemprop="streetAddress">{{ schema_address[3] }}</span>
+      <span itemprop="postalCode">{{ schema_address[4] }}</span>
+    </div>
+  {% endif %}
+  Телефон:<span itemprop="telephone">{{ telephone }}</span>,
+  Электронная почта: <span itemprop="email">{{ email }}</span>
+</div>
+<header>
+  <nav class="caption">
+    <div class="container">
+      <div class="nav-menu flex-container flex-center flex-justify">
+        <div class="flex-list flex-container flex-center flex-justify-mobile">
+          <p class="location"><span>Хабаровск</span></p>
+          <div class="flex-list flex-container flex-center">
+            <a href="about" class="about">О нас</a>
+            <a href="contacts" class="about">Контакты</a>
+            <a href="buyers" class="hide">Покупателям</a>
+          </div>
+        </div>
+        <div class="flex-container flex-list flex-center right hide-mobile">
+          <a target="_blank" rel="noopener noreferrer" href="https://wa.me/79145441600"><img src="/image/src/ic-whatsapp.svg">{{ telephone }}</a>
+          {% if telephone2 %}<a href="tel:{{ telephone2 }}">{{ telephone2 }}</a>{% endif %}
+          <a class="nav-mail" href="mailto:{{ email }}">{{ email }}</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="menu flex-list flex-container flex-center flex-justify">
+      <div class="menu flex-list flex-container flex-center flex-justify">
+        <div><button id="dropdown-menu" type="button" class="btn btn-dropdown dropdown-button"><span>Каталог</span></button></div>
+        {{ search }}
+      </div>
+      <div id="logo" class="center">
+        {% if logo %}
+          {% if home == og_url %}
+            <img src="{{ logo }}" title="{{ name }}" alt="{{ name }}"/>
+          {% else %}
+            <a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}"/></a>
+          {% endif %}
+        {% else %}
+          <h1><a href="{{ home }}">{{ name }}</a></h1>
+        {% endif %}
+      </div>
+      <div class="mobile mobile-search"><a href="/search" class="btn btn-search"><span>Поиск</span></a></div>
+      <div class="hide-mobile right">{{ cart }}</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row" style="position: relative;">
+      <div id="dropdown_menu">
+        <div class="dropdown-menu-bg"></div>
+        <div id="dropdown_menu_content">
+          <div class="dropdown-categories">
+            {% for category in categories %}
+              <a href="{{ category.href }}" class="hide-mobile {% if category.sub_categories %}has-subs{% else %}category-final {% endif %}" data-category-id="{{ category.category_id }}">{{ category.name }}</a>
+              <div class="dropdown-categories-list mobile">
+                <a href="{{ category.href }}">{{ category.name }}</a>{% if category.sub_categories %}<img src="image/src/ic-arrow-up.svg" alt="Раскрыть">{% endif %}
+              </div>
+              {% if category.sub_categories %}
+                <div class="dropdown-subcategories">
+                  {% for sub in category.sub_categories %}
+                    <a href="{{ sub.href }}" title="{{ sub.name }}" class="category-final" data-category-id="{{ sub.category_id }}">{{ sub.name }}</a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="dropdown-sellers hide-mobile"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-mobile mobile">
+    <div class="nav-mobile-content">
+      <div class="flex-container flex-list flex-justify">
+        <div>
+          {% if home == og_url %}
+            <img src="image/src/ic-home-active.svg" alt="{{ name }}"/>
+          {% else %}
+            <a href="{{ home }}"><img src="image/src/ic-home.svg" alt="{{ name }}"/></a>
+          {% endif %}
+          <p {% if home == og_url %}class="active"{% endif %}>Главная</p>
+        </div>
+        <div>
+          <a href="https://l-star.ru/contacts/"><img {% if currentPath == 'contacts' %}src="image/src/ic-location-active.svg"{% else %}src="image/src/ic-location.svg"{% endif %} alt="Контакты"></a>
+          <p {% if currentPath == 'contacts' %}class="active"{% endif %}>Контакты</p>
+        </div>
+        <div>
+          <button class="dropdown-button"><img src="image/src/ic-dropdown.svg" alt="Каталог"></button>
+          <p>Каталог</p>
+        </div>
+        <div>
+          {{ cart }}
+          <p>Корзина</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<script>
+  $('.dropdown-button, .dropdown-menu-bg').click(function() {
+    $('.dropdown-button').toggleClass('active');
+    $('#dropdown_menu').toggleClass('active');
+    $('.ocf-offcanvas, .ocfilter-mobile-handle .btn').removeClass('active');
+    $('.ocfilter-mobile-handle').toggle();
+    if ($(window).width() < 768) {
+      $('body').toggleClass('no-scroll').removeClass('modal-open');
+    }
+  });
+
+  $('header .search-button').click(function() {
+    $('header .search-field').toggleClass('active');
+    $('header .search-field input').focus();
+  });
+
+  $('.dropdown-categories-list img').click(function() {
+    $(this).toggleClass('active');
+    $(this).parent().next().toggleClass('active');
+  });
+
+  var timer1, timer2;
+  $('.dropdown-categories > a.has-subs').hover(function() {
+    var $this = this;
+    timer1 = setTimeout(function() {
+      if ($(window).width() > 767) {
+        $('.dropdown-sellers').removeClass('active');
+        $('.dropdown-categories .category-final').removeClass('active');
+        $($this).addClass('active');
+        $('.dropdown-categories > a.has-subs').not($this).removeClass('active');
+      }
+    }, 100);
+  }, function() {
+    clearTimeout(timer1);
+    clearTimeout(timer2);
+  });
+
+  $('.dropdown-categories .category-final').hover(function() {
+    var $this = $(this);
+    var $this_html = $this.html();
+    timer2 = setTimeout(function() {
+      if ($(window).width() > 767) {
+        if (!$this.parent('.dropdown-subcategories').length) {
+          $('.dropdown-categories > a.has-subs').removeClass('active');
+        }
+        $.ajax({
+          url: 'index.php?route=common/header_sellers',
+          data: 'category_id='+$this.attr('data-category-id')+($this.parent('.dropdown-subcategories').length ? '&limit=4' : '&limit=6'),
+          beforeSend: function() {
+            $this.append('<div class="lds-ring"><div></div><div></div><div></div><div></div></div>');
+          },
+          success: function(data) {
+            if (data) {
+              $('.dropdown-categories .category-final').removeClass('active');
+              $('.dropdown-sellers').html(data);
+              $('.dropdown-sellers').find('.price').each(function() {
+                $(this).text(new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format($(this).attr('data-price')).replace(/\D00(?=\D*$)/, ''));
+              });
+              if ($this.parent('.dropdown-subcategories').length) {
+                $('.dropdown-sellers').css({
+                  'left': $('.dropdown-subcategories').outerWidth() + $('.dropdown-categories').outerWidth() + 'px',
+                  'width': '540px'
+                });
+              } else {
+                $('.dropdown-sellers').css({
+                  'left': $('.dropdown-categories').outerWidth() + 'px',
+                  'width': '780px'
+                });
+              }
+              $('.dropdown-sellers').addClass('active');
+              $this.addClass('active').html($this_html);
+            }
+          }
+        });
+      }
+    }, 200);
+  }, function() {
+    clearTimeout(timer2);
+  });
+
+</script>
+{{ menu }}

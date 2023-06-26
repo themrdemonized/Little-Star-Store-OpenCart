@@ -1,0 +1,31 @@
+{{ header }}
+<div id="information-information" class="container">
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h1 style="margin-bottom: 40px;">Покупателям</h1>
+      <h2>Оплата картой банка</h2>
+      <p style="margin-bottom: 40px">Для оплаты (ввода реквизитов Вашей карты) Вы будете перенаправлены на платёжный шлюз ПАО СБЕРБАНК. Соединение с платёжным шлюзом и передача информации осуществляется в защищённом режиме с использованием протокола шифрования SSL. В случае если Ваш банк поддерживает технологию безопасного проведения интернет-платежей Verified By Visa, MasterCard SecureCode, MIR Accept, J-Secure для проведения платежа также может потребоваться ввод специального пароля.<br><br>Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО СБЕРБАНК. Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платёжных систем МИР, Visa Int., MasterCard Europe Sprl, JCB.</p>
+      <h2>Доставка</h2>
+      <p style="margin-bottom: 40px;">Доставка по г. Хабаровск бесплатна при заказе от 500 рублей.<br>Клиентам, находящимся за пределами г. Хабаровск, осуществляем доставку до выбранной ТК и курьерской службы в черте города.</p>
+      <h2>Точки самовывоза</h2>
+      <p style="margin-bottom: 24px;">г. Хабаровск, ул. Промышленная, д. 19, офис 3-1</p>
+      <div class="contacts-map">
+        <a class="dg-widget-link" href="http://2gis.ru/khabarovsk/firm/70000001040319219/center/135.10484218597415,48.49630322519202/zoom/16?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=bigMap">Посмотреть на карте Хабаровска</a>
+        <div class="dg-widget-link">
+          <a href="http://2gis.ru/khabarovsk/center/135.105149,48.494717/zoom/16/routeTab/rsType/bus/to/135.105149,48.494717╎Центр упаковки?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=route">Найти проезд до Центр упаковки</a>
+        </div>
+        <script charset="utf-8" src="https://widgets.2gis.com/js/DGWidgetLoader.js"></script>
+        <script charset="utf-8">new DGWidgetLoader({"width":"100%","height":400,"borderColor":"transparent","pos":{"lat":48.49630322519202,"lon":135.10484218597415,"zoom":16},"opt":{"city":"khabarovsk"},"org":[{"id":"70000001040319219"}]});</script>
+        <noscript style="color:#c00;font-size:16px;font-weight:bold;">Виджет карты использует JavaScript. Включите его в настройках вашего браузера.</noscript>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

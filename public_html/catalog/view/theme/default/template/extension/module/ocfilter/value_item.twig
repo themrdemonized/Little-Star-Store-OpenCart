@@ -1,0 +1,36 @@
+{% if option.color %}
+	{% if value.selected %}
+	<label id="v-{{ value.id }}" class="ocf-selected {% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %} color-radio-button" data-option-id="{{ option.option_id }}">
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="{{ value.params }}" checked="checked" class="ocf-target" autocomplete="off" />
+	{% elseif value.count %}
+	<label id="v-{{ value.id }}" data-option-id="{{ option.option_id }}" class="{% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %} color-radio-button">
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="{{ value.params }}" class="ocf-target" autocomplete="off" />
+	{% else %}
+	<label id="v-{{ value.id }}" class="disabled {% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %} color-radio-button" data-option-id="{{ option.option_id }}">
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="" disabled="disabled" class="ocf-target" autocomplete="off" />
+	{% endif %}
+	  <span class="checkmark" {% if value.has_color %}style="background-color: #{{ value.color }};"{% endif %}  data-toggle="tooltip" title="{{ value.name }}">{% if not value.has_color %}<span>{{ value.name }}</span>{% endif %}</span>
+	</label>
+{% else %}
+
+	{% if option.image %}
+	<div class="ocf-image" style="background-image: url({{ value.image }});"></div>
+	{% endif %}
+
+	{% if value.selected %}
+	<label id="v-{{ value.id }}" class="ocf-selected {% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %}" data-option-id="{{ option.option_id }}">{{ value.name }} {% if show_counter %}<small class="badge"></small>{% endif %}
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="{{ value.params }}" checked="checked" class="ocf-target" autocomplete="off" />
+	  <span class="checkmark"></span>
+	</label>
+	{% elseif value.count %}
+	<label id="v-{{ value.id }}" data-option-id="{{ option.option_id }}" class="{% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %}">{{ value.name }} {% if show_counter %}<small class="badge">{{ value.count }}</small>{% endif %}
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="{{ value.params }}" class="ocf-target" autocomplete="off" />
+	  <span class="checkmark"></span>
+	</label>
+	{% else %}
+	<label id="v-{{ value.id }}" class="disabled {% if option.type == 'radio' %}radio-container{% else %}checkbox-container{% endif %}" data-option-id="{{ option.option_id }}">{{ value.name }} {% if show_counter %}<small class="badge">0</small>{% endif %}
+	  <input type="{{ option.type }}" name="ocf[{{ option.option_id }}]" value="" disabled="disabled" class="ocf-target" autocomplete="off" />
+	  <span class="checkmark"></span>
+	</label>
+	{% endif %}
+{% endif %}

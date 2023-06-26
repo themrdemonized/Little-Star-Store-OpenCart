@@ -1,0 +1,28 @@
+{{ header }}
+<div id="common-home" class="container">
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+        {% for category in categories %}
+        <div class="category-heading flex-container flex-center flex-justify">
+            <h2>{{ category.name }}</h2>
+            <a href="{{ category.href }}" class="header-3 watch-all primary">Посмотреть все</a>
+        </div>
+        <div class="row margin-bottom">
+            {% for product in category.products %}
+              {% include 'default/template/common/product-thumb.twig' with {'home_layout': true} %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+{{ footer }}

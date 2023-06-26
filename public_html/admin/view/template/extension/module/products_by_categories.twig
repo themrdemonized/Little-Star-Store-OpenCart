@@ -1,0 +1,198 @@
+{{ header }}
+<style>
+  .alert {
+    overflow: hidden;
+  } 
+  .alert-fixed {
+    position: fixed;
+    width: 50%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    box-shadow: 0px 12px 12px 0 rgba(0,0,0,0.2);
+  }
+  .save-settings {
+    background-color: #00AE5D!important;
+  }
+  .save-popup {
+    position: absolute;
+    right: -24px;
+    top: 0;
+  }
+  #module_products_by_categories_categories {
+    margin-top: 16px;
+  }
+  #module_products_by_categories_categories > div {
+    padding: 16px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+  }
+</style>
+{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="button" data-toggle="tooltip" title="{{ button_save }} (AJAX)" class="save-settings btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_products_by_categories_status" id="input-status" class="form-control">
+                {% if module_products_by_categories_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="{{ help_category }}">{{ entry_category }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" />
+              <div id="module_products_by_categories_categories">
+                {% for category in module_products_by_categories_categories %}
+                <div id="module_products_by_categories_categories{{ category.category_id }}">
+                  <i class="fa fa-minus-circle"></i>
+                  <span>{{ category.name }}</span>
+                  <input type="hidden" name="module_products_by_categories_categories[]" value="{{ category.category_id }}">
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-sort-method">{{ entry_sort_method }}</label>
+            <div class="col-sm-10">
+              <select name="module_products_by_categories_sort_method" id="input-sort-method" class="form-control">
+              {% for value in sort_methods %}
+                {% if module_products_by_categories_sort_method == value.value %}
+                  <option value="{{ value.value }}" selected="selected">{{ value.text }}</option>
+                {% else %}
+                  <option value="{{ value.value }}">{{ value.text }}</option>
+                {% endif %}
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-limit">{{ entry_limit }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="module_products_by_categories_limit" value="{{ module_products_by_categories_limit }}" placeholder="{{ entry_limit }}" id="input-limit" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-swiper">{{ entry_swiper }}</label>
+            <div class="col-sm-10">
+              <select name="module_products_by_categories_swiper" id="input-swiper" class="form-control">
+                {% if module_products_by_categories_swiper %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
+<script src="view/javascript/sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
+<script>
+  $('#module_products_by_categories_categories').sortable({
+    group: 'list',
+    animation: 200,
+  });
+  $('input[name=\'category\']').autocomplete({
+    'source': function(request, response) {
+      $.ajax({
+        url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+        dataType: 'json',
+        success: function(json) {
+          response($.map(json, function(item) {
+            return {
+              label: item['name'],
+              value: item['category_id']
+            }
+          }));
+        }
+      });
+    },
+    'select': function(item) {
+      $('input[name=\'category\']').val('');
+
+      $('#module_products_by_categories_categories' + item['value']).remove();
+
+      $('#module_products_by_categories_categories').append('<div id="module_products_by_categories_categories' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="module_products_by_categories_categories[]" value="' + item['value'] + '" /></div>');
+    }
+  });
+
+  $('#module_products_by_categories_categories').delegate('.fa-minus-circle', 'click', function() {
+    $(this).parent().remove();
+  });
+
+  $("body").on("click", ".save-settings", function() {
+    $.ajax({
+      type: 'post',
+      url: 'index.php?route=extension/module/products_by_categories/saveSettings&user_token={{ user_token }}',
+      data: $('#form-module input, #form-module select, #form-module textarea'),
+      dataType: 'json',
+      beforeSend: function() {
+        console.log('Saving...');
+          },
+      success: function(json) {
+        $('.alert-dismissible, .text-danger').remove();
+        $('.form-group').removeClass('has-error');
+        if (json['error_code']) {
+          console.log('Saving failed');
+          $('#input-code').after('<div class="text-danger">' + json['error_code'] + '</div>');
+          $('.text-danger').parents(".form-group").addClass('has-error');
+        }
+        if (json['success']) {
+          console.log('Settings saved');
+          $('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+          $("body").append('<div class="alert alert-success alert-dismissible alert-fixed">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+          $(".save-popup").remove();
+          setTimeout(function() {
+            $('.alert-fixed').animate({opacity: 0}, 500, function() {
+              $(this).remove();
+            });
+          }, 1500);
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,51 @@
+{{ header }}
+<div id="product-category" class="container">
+  {% if products %}
+    <ul class="breadcrumb">
+      {% for breadcrumb in breadcrumbs %}
+      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      {% endfor %}
+    </ul>
+    <div class="flex-container flex-justify mobile-block">
+      <div class="product-heading flex-container">
+        <h1>{{ heading_title }}</h1>
+        <span class="header-3 text-icon">{{ count }} {% if (count % 100 >= 11 and count % 100 <= 19) or count % 10 >= 5 or count % 10 == 0 %}товаров{% elseif count % 10 == 1 %}товар{% else %}товара{% endif %}</span>
+      </div>
+      <div class="sort-block">
+        <button type="button" class="btn btn-primary mobile" data-toggle="offcanvas">Фильтр <i class="fa fa-filter"></i></button>
+        {% include 'default/template/product/category_sort.twig' %}
+      </div>
+    </div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    {% if products %}
+      <div id="content" class="{{ class }}">{{ content_top }}
+        <div class="product-block row flex-container flex-wrap">
+          {% for product in products %}
+            {% include 'default/template/common/product-thumb.twig' with {'home_layout': true} %}
+          {% endfor %}
+        </div>
+        <div class="row">
+          <div class="col-sm-6 text-left">{{ pagination }}</div>
+          <div class="col-sm-6 text-right">{{ results }}</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-sm-12">
+        <p>{{ text_empty }}</p>
+        <div class="buttons">
+          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        </div>
+      </div>
+    {% endif %}
+    {{ content_bottom }}</div>
+  {{ column_right }}</div>
+</div>
+{{ footer }} 

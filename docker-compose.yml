@@ -1,0 +1,71 @@
+version: "3.8"
+services:
+
+  php:
+    # image: demonized/oc_php
+    # image: demonized/oc_php_apache
+    image:  ttt/site_oc_lstar
+    # build: './.setup/php/'
+    networks:
+      - AMP
+    volumes:
+      - ./compose_config.php/:/var/www/html/config.php
+      - ./compose_admin_config.php/:/var/www/html/admin/config.php
+      # - ./.setup/php/config/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      # - ./.setup/apache/docker.apache.conf:/usr/local/apache2/conf.d/docker.apache.conf
+      - ./.setup/apache/logs/:/usr/local/apache2/logs
+      - ./.setup/apache/.htaccess:/var/www/html/.htaccess
+    ports:
+      - "8000:80"
+
+  # apache:
+  #   image: demonized/oc_apache
+  #   # build: './.setup/apache/'
+  #   depends_on:
+  #     - php
+  #   networks:
+  #     - AMP
+  #   ports:
+  #     - "8000:80"
+  #   volumes:
+  #     - ./public_html/:/var/www/html/
+  #     - ./storage/:/var/www/storage/
+  #     - ./.setup/apache/docker.apache.conf:/usr/local/apache2/conf.d/docker.apache.conf
+  #     - ./.setup/apache/logs/:/usr/local/apache2/logs
+  #     - ./.setup/apache/.htaccess:/var/www/html/.htaccess
+
+  mysql-mariadb10-service:
+    image: mariadb:10.7.3
+    volumes:
+      - ./.setup/mysql/data/:/var/lib/mysql/
+      - ./.setup/mysql/config/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./databases/:/usr/local/databases/
+    networks:
+      - AMP
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - "3307:3306"
+    restart: always
+    command: >
+      bash -c "
+      echo 'adjusting mysql permissions' &&
+      chmod 644 /etc/mysql/conf.d/my.cnf &&
+      mysqld --user=root --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      "
+
+  pma:
+    image: phpmyadmin:5.1.1
+    networks:
+      - AMP
+    ports:
+      - "8001:80"
+    environment:
+      - PMA_HOST=mysql-mariadb10-service
+      - UPLOAD_LIMIT=1024M
+    # Wait for "mysql" container to start first 
+    depends_on:
+      - mysql-mariadb10-service
+    restart: always
+networks:
+  AMP:

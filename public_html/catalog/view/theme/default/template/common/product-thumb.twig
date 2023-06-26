@@ -1,0 +1,28 @@
+<div class="product-layout product-grid {% if home_layout %}product-home-layout {% if column_left %}col-lg-4 col-md-4 {% else %} col-lg-3 col-md-3 {% endif %} col-sm-6 col-xs-6{% else %}col-xs-12 col-sm-12{% endif %}">
+  <div class="product-thumb">
+    {% if product.special %}
+      <p class="product-special header-3 primary-bg text-high-d">Акция</p>
+    {% endif %}
+    <div class="product-thumb-layout flex-container">
+      <a href="{{ product.href }}" class="image">
+        <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}"/>
+      </a>
+      <div id="product_id-{{ product.product_id }}" class="product-thumb-desc product-js">
+        <div class="product-thumb-title flex-container flex-center flex-justify">
+          <h3 class="subparagraph"><a href="{{ product.href }}">{{ product.name }}</a></h3>
+          {% if product.price %}
+              <div class="product-price flex-container flex-column">
+              {% if not product.special %}
+                  <p class="header-2 price" data-price="{{ product.price_raw }}">{{ product.price }}</p>
+              {% else %}
+                  <p class="price-old caption text-disabled">{{ product.price }}</p>
+                  <p class="header-2 price" data-price="{{ product.price_raw }}">{{ product.special }}</p>
+              {% endif %}
+              </div>
+          {% endif %}
+        </div>
+          
+      </div>
+    </div>
+  </div>
+</div>

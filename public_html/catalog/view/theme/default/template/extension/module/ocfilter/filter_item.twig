@@ -1,0 +1,32 @@
+<div class="list-group-item ocfilter-option" id="option-{{ option.option_id }}">
+  <div class="ocf-option-name">
+    {% if not (option.selectbox or (show_values_limit > 0 and option.values|length > show_values_limit) and not option.color) %}{{ option.name }}{% endif %}
+
+		{% if option.type == 'slide' or option.type == 'slide_dual' %}
+    <span id="left-value-{{ option.option_id }}">{{ option.slide_value_min_get }}</span>
+		{% if option.type == 'slide_dual' %}
+		-&nbsp;<span id="right-value-{{ option.option_id }}">{{ option.slide_value_max_get }}</span>
+		{% endif %}
+    {{ option.postfix }}
+    {% endif %}
+  </div>
+
+  <div class="ocf-option-values {% if option.color %}option-colors flex-container flex-center flex-wrap{% endif %}">
+    {% if option.type == 'slide' or option.type == 'slide_dual' %}
+    {% include 'default/template/extension/module/ocfilter/filter_slider_item.twig' %}
+    {% else %}
+
+    {% if option.selectbox or (show_values_limit > 0 and option.values|length > show_values_limit) and not option.color %}
+    <div class="ocfilter-dropdown">
+      <button type="button"><span>{{ option.name }}</span></button>
+      <div class="ocfilter-dropdown-menu">
+        {% include 'default/template/extension/module/ocfilter/value_list.twig' %}
+      </div>
+    </div>
+    {% else %}
+    {% include 'default/template/extension/module/ocfilter/value_list.twig' %}
+    {% endif %}
+
+    {% endif %}
+  </div>
+</div>

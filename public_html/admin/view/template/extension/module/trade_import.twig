@@ -1,0 +1,1143 @@
+{{ header }}
+<style type="text/css">
+  .trade-import-debug {
+    position: relative;
+  }
+  .trade-import-debug-preloader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.55);
+    z-index: 1;
+  }
+  .lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 16px;
+    height: 16px;
+  }
+  .lds-ring div {
+    box-sizing: border-box;
+      display: block;
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      margin: 4px 8px;
+      border: 2px solid #000;
+      border-radius: 50%;
+      animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      border-color: #000 transparent transparent transparent;
+  }
+  .lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+  .lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .trade-import-debug-preloader div {
+    width: 64px;
+    height: 64px;
+  }
+  .trade-import-debug button .trade-import-debug-preloader {
+    position: relative;
+    background-color: transparent;
+    display: inline-block;
+  }
+  .trade-import-debug button .trade-import-debug-preloader .lds-ring {
+    width: 39px;
+    height: 12px;
+    transform: translate(-10px, -1px);
+  }
+  .trade-import-debug button .trade-import-debug-preloader .lds-ring div {
+    border-color: #fff;
+    width: 32px;
+    height: 10px;
+  }
+  .alert {
+    overflow: hidden;
+  } 
+  .alert-fixed {
+    position: fixed;
+    width: 50%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    box-shadow: 0px 12px 12px 0 rgba(0,0,0,0.2);
+  }
+  .save-settings {
+    background-color: #00AE5D!important;
+  }
+  .save-popup {
+    position: absolute;
+    right: -24px;
+    top: 0;
+  }
+  .trade-import-options {
+    text-align: justify;
+    -moz-text-align-last: justify;
+    text-align-last: justify;
+  }
+  .trade-import-options > div {
+    display: inline-block;
+    width: 33%;
+    padding: 0;
+    margin-bottom: 12px;
+  }
+  .trade-import-options.half-size > div {
+    width: 50%;
+  }
+  .trade-import-options > div > div {
+    width: 100%;
+  }
+  .trade-import-options .control-label {
+    width: initial;
+    padding-top: 0;
+    text-align: left;
+    text-align-last: left;
+  }
+  .trade-import-options .form-group + .form-group {
+    border-top: none;
+  }
+  .hr {
+    border-top: 1px solid #ccc;
+    margin: 15px -15px;
+  }
+  p button {
+    margin: 8px 0;
+  }
+  @media (max-width: 920px) {
+    .trade-import-options > div {
+      display: inline-block;
+      width: 50%;
+    }
+  }
+  @media (max-width: 600px) {
+    .trade-import-options > div {
+      display: inline-block;
+      width: 100%;
+    }
+    .trade-import-options.half-size > div {
+      width: 100%;
+    }
+  }
+</style>
+{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="button" data-toggle="tooltip" title="{{ button_save }} (AJAX)" class="save-settings btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% if success %}
+    <div class="alert alert-success alert-dismissible" style="margin: 20px;"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+  {% endif %}
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+          <div class="panel panel-info">
+        <h4 class="panel-heading">{{ text_enable_sync }}</h4>
+          <div class="panel-body">
+            <ul>
+              <li><strong>{{ text_latest_operation }}</strong>
+                <ul>
+                  <li>{{ text_latest_id }}: {{ latest_id }}</li>
+                  <li>{{ text_latest_timestamp }}: {{ latest_timestamp }}</li>
+                  <li>{{ text_latest_json_timestamp }}: {{ latest_json_timestamp }}</li>
+                  <li>{{ text_latest_success }}: {{ latest_success }}</li>
+                </ul>
+              </li>
+              {% if module_trade_import_enable_sync %}
+              <li><strong id="next-schedule">{{ text_next_schedule }}: <span>{{ next_schedule }}</span></strong></li>
+              {% endif %}
+            </ul>
+          </div>
+            </div>
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="trade-import-options">
+            <div class="form-group required">
+              <label class="col-sm-2 control-label" for="input-server">{{ entry_server }}</label>
+              <div class="col-sm-10">
+                <textarea name="module_trade_import_server" rows="5" id="input-server" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_server }}</textarea>
+                {% if error_code %}
+                <div class="text-danger">{{ error_code }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-group required">
+              <label class="col-sm-2 control-label" for="input-code">{{ entry_code }}</label>
+              <div class="col-sm-10">
+                <textarea name="module_trade_import_code" rows="5" id="input-code" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_code }}</textarea>
+                {% if error_code %}
+                <div class="text-danger">{{ error_code }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="form-group required">
+              <label class="col-sm-2 control-label" for="input-nomenclature">{{ entry_nomenclature }}</label>
+              <div class="col-sm-10">
+                <textarea name="module_trade_import_nomenclature" rows="5" id="input-nomenclature" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_nomenclature }}</textarea>
+                {% if error_code %}
+                <div class="text-danger">{{ error_code }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-token">{{ entry_token }}</label>
+            <div class="col-sm-10">
+            <textarea name="module_trade_import_token" rows="5" id="input-token" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_token }}</textarea>
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="trade-import-options">
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-enable-old-api">{{ entry_enable_old_api }}</label>
+              <div class="col-sm-10">
+                <select name="module_trade_import_enable_old_api" id="input-enable-old-api" class="form-control">
+                {% if module_trade_import_enable_old_api %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-old-api-address">{{ entry_old_api_address }}</label>
+              <div class="col-sm-10">
+              <textarea name="module_trade_import_old_api_address" rows="5" id="input-old-api-address" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_old_api_address }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-old-api-token">{{ entry_old_api_token }}</label>
+              <div class="col-sm-10">
+              <textarea name="module_trade_import_old_api_token" rows="5" id="input-old-api-token" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_old_api_token }}</textarea>
+              </div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="trade-import-options">
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-enable-order"><span data-toggle="tooltip" title="{{ help_enable_order }}">{{ entry_enable_order }}</span></label>
+              <div class="col-sm-10">
+                <select name="module_trade_import_enable_order" id="input-enable-order" class="form-control">
+                {% if module_trade_import_enable_order %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-v2-api-order"><span data-toggle="tooltip" title="{{ help_v2_api_order }}">{{ entry_v2_api_order }}</span></label>
+              <div class="col-sm-10">
+                <select name="module_trade_import_v2_api_order" id="input-v2-api-order" class="form-control">
+                {% if module_trade_import_v2_api_order %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-address"><span data-toggle="tooltip" title="{{ help_entry_order_address }}">{{ entry_order_address }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_address" rows="5" id="input-order-address" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_address }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-token"><span data-toggle="tooltip" title="{{ help_entry_order_token }}">{{ entry_order_token }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_token" rows="5" id="input-order-token" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_token }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-cashbox-id"><span data-toggle="tooltip" title="{{ help_entry_order_cashbox_id }}">{{ entry_order_cashbox_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_cashbox_id" rows="5" id="input-order-cashbox-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_cashbox_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-employee-id"><span data-toggle="tooltip" title="{{ help_entry_order_employee_id }}">{{ entry_order_employee_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_employee_id" rows="5" id="input-order-employee-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_employee_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-payment-type-id"><span data-toggle="tooltip" title="{{ help_entry_order_payment_type_id }}">{{ entry_order_payment_type_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_payment_type_id" rows="5" id="input-order-payment-type-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_payment_type_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-order-storage-id"><span data-toggle="tooltip" title="{{ help_entry_order_storage_id }}">{{ entry_order_storage_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_order_storage_id" rows="5" id="input-order-storage-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_order_storage_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-delivery-uuid"><span data-toggle="tooltip" title="{{ help_entry_delivery_uuid }}">{{ entry_delivery_uuid }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_delivery_uuid" rows="5" id="input-delivery-uuid" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_delivery_uuid }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-delivery-storage-id"><span data-toggle="tooltip" title="{{ help_entry_delivery_storage_id }}">{{ entry_delivery_storage_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_delivery_storage_id" rows="5" id="input-delivery-storage-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_delivery_storage_id }}</textarea>
+              </div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="trade-import-options">
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-price"><span data-toggle="tooltip" title="{{ help_entry_price }}">{{ entry_price }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_price" rows="5" id="input-price" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_price }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-top-category"><span data-toggle="tooltip" title="{{ help_entry_top_category }}">{{ entry_top_category }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_top_category" rows="5" id="input-top-category" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_top_category }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-price-city"><span data-toggle="tooltip" title="{{ help_entry_price_city }}">{{ entry_price_city }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_price_city" rows="5" id="input-price-city" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_price_city }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-price-map"><span data-toggle="tooltip" title="{{ help_entry_price_map }}">{{ entry_price_map }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_price_map" rows="5" id="input-price-map" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_price_map }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-parent-id"><span data-toggle="tooltip" title="{{ help_entry_parent_id }}">{{ entry_parent_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_parent_id" rows="5" id="input-parent-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_parent_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-ignore-category"><span data-toggle="tooltip" title="{{ help_entry_ignore_category }}">{{ entry_ignore_category }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_ignore_category" rows="5" id="input-ignore-category" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_ignore_category }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-ignore-filter"><span data-toggle="tooltip" title="{{ help_entry_ignore_filter }}">{{ entry_ignore_filter }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_ignore_filter" rows="5" id="input-ignore-filter" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_ignore_filter }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-ignore-property"><span data-toggle="tooltip" title="{{ help_entry_ignore_property }}">{{ entry_ignore_property }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_ignore_property" rows="5" id="input-ignore-property" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_ignore_property }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-add-properties-to-filters"><span data-toggle="tooltip" title="{{ help_entry_add_properties_to_filters }}">{{ entry_add_properties_to_filters }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_add_properties_to_filters" rows="5" id="input-add-properties-to-filters" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_add_properties_to_filters }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-banner-id"><span data-toggle="tooltip" title="{{ help_entry_banner_id }}">{{ entry_banner_id }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_banner_id" rows="5" id="input-banner-id" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_banner_id }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-properties-as-description"><span data-toggle="tooltip" title="{{ help_entry_properties_as_description }}">{{ entry_properties_as_description }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_properties_as_description" rows="5" id="input-properties-as-description" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_properties_as_description }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-default-weight"><span data-toggle="tooltip" title="{{ help_entry_default_weight }}">{{ entry_default_weight }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_default_weight" rows="5" id="input-default-weight" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_default_weight }}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" for="input-default-size"><span data-toggle="tooltip" title="{{ help_entry_default_size }}">{{ entry_default_size }}</span></label>
+                 <div class="col-sm-10">
+                  <textarea name="module_trade_import_default_size" rows="5" id="input-default-size" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%;">{{ module_trade_import_default_size }}</textarea>
+              </div>
+            </div>
+          </div>
+          <hr class="hr">
+          <div class="trade-import-options">
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-enable-sync"><span data-toggle="tooltip" title="{{ help_enable_sync }}">{{ entry_enable_sync }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_enable_sync" id="input-enable-sync" class="form-control">
+                    {% if module_trade_import_enable_sync %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-sync-period"><span data-toggle="tooltip" title="{{ help_sync_period }}">{{ entry_sync_period }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_sync_period" id="input-sync-period" class="form-control">
+                      {% for sync_option in sync_options %}
+                        {% if module_trade_import_sync_period == sync_option.value %}
+                          <option value={{ sync_option.value }} selected="selected">{{ sync_option.text }}</option>
+                          {% else %}
+                          <option value={{ sync_option.value }}>{{ sync_option.text }}</option>
+                          {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-sync-time"><span data-toggle="tooltip" title="{{ help_sync_time }}">{{ entry_sync_time }}</span></label>
+                  <div class="col-sm-10">
+                    <input type="text" name="module_trade_import_sync_time" id="input-sync-time" class="form-control" style="min-height: 35px; max-height: 35px; min-width: 100%; max-width: 100%;" value="{{ module_trade_import_sync_time }}">
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-time-zone"><span data-toggle="tooltip" title="{{ help_time_zone }}">{{ entry_time_zone }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_time_zone" id="input-time-zone" class="form-control">
+                      {% for timezone_option in timezone_options %}
+                        {% if module_trade_import_time_zone == timezone_option %}
+                          <option value={{ timezone_option }} selected="selected">{{ timezone_option }}</option>
+                          {% else %}
+                          <option value={{ timezone_option }}>{{ timezone_option }}</option>
+                          {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-local-json"><span data-toggle="tooltip" title="{{ help_local_json }}">{{ entry_local_json }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_local_json" id="input-local-json" class="form-control">
+                    {% if module_trade_import_local_json %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-save-json"><span data-toggle="tooltip" title="{{ help_save_json }}">{{ entry_save_json }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_save_json" id="input-save-json" class="form-control">
+                    {% if module_trade_import_save_json %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <hr class="hr">
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-add-category"><span data-toggle="tooltip" title="{{ help_add_category }}">{{ entry_add_category }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_add_category" id="input-add-category" class="form-control">
+                    {% if module_trade_import_add_category %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-delete-category"><span data-toggle="tooltip" title="{{ help_delete_category }}">{{ entry_delete_category }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_delete_category" id="input-delete-category" class="form-control">
+                    {% if module_trade_import_delete_category %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-hide-category"><span data-toggle="tooltip" title="{{ help_hide_category }}">{{ entry_hide_category }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_hide_category" id="input-hide-category" class="form-control">
+                    {% if module_trade_import_hide_category %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group" style="display: none;">
+                  <label class="col-sm-2 control-label" for="input-sub-filters"><span data-toggle="tooltip" title="{{ help_sub_filters }}">{{ entry_sub_filters }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_sub_filters" id="input-sub-filters" class="form-control">
+                    {% if module_trade_import_sub_filters %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <hr class="hr">
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-add-product"><span data-toggle="tooltip" title="{{ help_add_product }}">{{ entry_add_product }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_add_product" id="input-add-product" class="form-control">
+                    {% if module_trade_import_add_product %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-delete-product"><span data-toggle="tooltip" title="{{ help_delete_product }}">{{ entry_delete_product }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_delete_product" id="input-delete-product" class="form-control">
+                    {% if module_trade_import_delete_product %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-hide-product"><span data-toggle="tooltip" title="{{ help_hide_product }}">{{ entry_hide_product }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_hide_product" id="input-hide-product" class="form-control">
+                    {% if module_trade_import_hide_product %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-hide-empty-product"><span data-toggle="tooltip" title="{{ help_hide_empty_product }}">{{ entry_hide_empty_product }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_hide_empty_product" id="input-hide-empty-product" class="form-control">
+                    {% if module_trade_import_hide_empty_product %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+            <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-round-price"><span data-toggle="tooltip" title="{{ help_round_price }}">{{ entry_round_price }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_round_price" id="input-round-price" class="form-control">
+                    {% for value in round_price_options %}
+                      {% if module_trade_import_round_price == value.value %}
+                        <option value="{{ value.value }}" selected="selected">{{ value.text }}</option>
+                      {% else %}
+                        <option value="{{ value.value }}">{{ value.text }}</option>
+                      {% endif %}
+                    {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-add-separate-products"><span data-toggle="tooltip" title="{{ help_add_separate_products }}">{{ entry_add_separate_products }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_add_separate_products" id="input-add-separate-products" class="form-control">
+                    {% if module_trade_import_add_separate_products %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <hr class="hr">
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-ocfilter"><span data-toggle="tooltip" title="{{ help_ocfilter }}">{{ entry_ocfilter }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_ocfilter" id="input-ocfilter" class="form-control">
+                    {% if module_trade_import_ocfilter %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-category-names"><span data-toggle="tooltip" title="{{ help_keep_category_names }}">{{ entry_keep_category_names }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_category_names" id="input-keep-category-names" class="form-control">
+                    {% if module_trade_import_keep_category_names %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-category-description"><span data-toggle="tooltip" title="{{ help_keep_category_description }}">{{ entry_keep_category_description }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_category_description" id="input-keep-category-description" class="form-control">
+                    {% if module_trade_import_keep_category_description %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-category-meta"><span data-toggle="tooltip" title="{{ help_keep_category_meta }}">{{ entry_keep_category_meta }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_category_meta" id="input-keep-category-meta" class="form-control">
+                    {% if module_trade_import_keep_category_meta %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-product-names"><span data-toggle="tooltip" title="{{ help_keep_product_names }}">{{ entry_keep_product_names }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_product_names" id="input-keep-product-names" class="form-control">
+                    {% if module_trade_import_keep_product_names %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-product-description"><span data-toggle="tooltip" title="{{ help_keep_product_description }}">{{ entry_keep_product_description }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_product_description" id="input-keep-product-description" class="form-control">
+                    {% if module_trade_import_keep_product_description %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-keep-product-meta"><span data-toggle="tooltip" title="{{ help_keep_product_meta }}">{{ entry_keep_product_meta }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_keep_product_meta" id="input-keep-product-meta" class="form-control">
+                    {% if module_trade_import_keep_product_meta %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-short-url"><span data-toggle="tooltip" title="{{ help_short_url }}">{{ entry_short_url }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_short_url" id="input-short-url" class="form-control">
+                    {% if module_trade_import_short_url %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-full-path-url"><span data-toggle="tooltip" title="{{ help_full_path_url }}">{{ entry_full_path_url }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_full_path_url" id="input-full-path-url" class="form-control">
+                    {% if module_trade_import_full_path_url %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-full-sync"><span data-toggle="tooltip" title="{{ help_full_sync }}">{{ entry_full_sync }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_full_sync" id="input-full-sync" class="form-control">
+                    {% if module_trade_import_full_sync %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-names-as-uuid"><span data-toggle="tooltip" title="{{ help_names_as_uuid }}">{{ entry_names_as_uuid }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_names_as_uuid" id="input-names-as-uuid" class="form-control">
+                    {% if module_trade_import_names_as_uuid %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-product-image-jpeg"><span data-toggle="tooltip" title="{{ help_product_image_jpeg }}">{{ entry_product_image_jpeg }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_product_image_jpeg" id="input-product-image-jpeg" class="form-control">
+                    {% if module_trade_import_product_image_jpeg %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-banner-image-jpeg"><span data-toggle="tooltip" title="{{ help_banner_image_jpeg }}">{{ entry_banner_image_jpeg }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_banner_image_jpeg" id="input-banner-image-jpeg" class="form-control">
+                    {% if module_trade_import_banner_image_jpeg %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-image-ignore-same-size"><span data-toggle="tooltip" title="{{ help_image_ignore_same_size }}">{{ entry_image_ignore_same_size }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_image_ignore_same_size" id="input-image-ignore-same-size" class="form-control">
+                    {% if module_trade_import_image_ignore_same_size %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-ignore-noname-characteristics"><span data-toggle="tooltip" title="{{ help_ignore_noname_characteristics }}">{{ entry_ignore_noname_characteristics }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="module_trade_import_ignore_noname_characteristics" id="input-ignore-noname-characteristics" class="form-control">
+                    {% if module_trade_import_ignore_noname_characteristics %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                    </select>
+                  </div>
+                </div>
+              <hr class="hr">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-add-one-product"><span data-toggle="tooltip" title="{{ help_add_one_product }}">{{ entry_add_one_product }}</span></label>
+                   <div class="col-sm-10">
+                    <textarea name="module_trade_import_add_one_product" rows="5" id="input-add-one-product" class="form-control" style="min-height: 40px; max-height: 40px; min-width: 100%; max-width: 100%; margin-bottom: 16px;">{{ module_trade_import_add_one_product }}</textarea>
+                </div>
+              </div>
+            </div> 
+          <div class="form-group trade-import-debug" style="padding-top: 0;">
+            <label class="col-sm-2 control-label" for="input-status" style="text-align: left; padding-top: 0;">{{ load_text }}</label>
+            <div class="col-sm-10" style="width: 100%; text-align-last: auto;">
+              <textarea name="json-text" id="input-group" class="form-control" style="min-height: 500px; min-width: 100%; max-width: 100%; margin-bottom: 16px;"></textarea>
+              <p>
+                <button type="button" id="button-get-json" class="btn btn-primary">{{ get_button }}</button>
+                <button type="button" id="button-get-prices" class="btn btn-primary">{{ get_prices }}</button>
+                <button type="button" id="button-get-groups" class="btn btn-primary">{{ get_groups }}</button>
+                <button type="button" id="button-get-nomenclatures" class="btn btn-primary">{{ get_nomenclatures }}</button>
+                <button type="button" id="button-get-option-characteristic" class="btn btn-primary">{{ get_option_characteristic }}</button>
+                <button type="button" id="button-get-stocks" class="btn btn-primary">{{ get_stocks }}</button>
+                <button type="button" id="button-get-warehouses" class="btn btn-primary">{{ get_warehouses }}</button>
+                <button type="button" id="button-get-filters" class="btn btn-primary">{{ get_filters }}</button>
+                <button type="button" id="button-get-customer-groups" class="btn btn-primary">{{ get_customer_groups }}</button>
+                <button type="button" id="button-get-services" class="btn btn-primary">{{ get_services }}</button>
+                <br>
+                <button type="button" id="button-show-orders" class="btn btn-primary">{{ get_orders }}</button>
+                <button type="button" id="button-show-checks" class="btn btn-primary">{{ get_checks }}</button>
+                <br>
+                <button type="button" id="button-add-indexes" class="btn btn-primary">{{ add_indexes }}</button>
+                <button type="button" id="button-get-images" class="btn btn-primary">{{ get_images }}</button>
+                <button type="button" id="button-cache-images" class="btn btn-primary">{{ cache_images }}</button>
+                <button type="button" id="button-delete-images" class="btn btn-primary">{{ delete_images }}</button>
+                <button type="button" id="button-delete-images-not-in-table" class="btn btn-primary">{{ delete_images_not_in_table }}</button>
+                <button type="button" id="button-delete-images-table" class="btn btn-primary">{{ delete_images_table }}</button>
+                <br>
+                <button type="button" id="button-add-one-product" class="btn btn-primary">{{ add_one_product }}</button>
+                <button type="button" id="button-add-one-separate-product" class="btn btn-primary">{{ add_one_separate_product }}</button>
+                <br>
+                <button type="button" id="button-clean-orders" class="btn btn-primary">{{ clean_orders }}</button>
+                <button type="button" id="button-clean-checks" class="btn btn-primary">{{ clean_checks }}</button>
+                <button type="button" id="button-clean-tables" class="btn btn-primary">{{ clean_tables }}</button>
+                <button type="button" id="button-clean-all" class="btn btn-primary">{{ clean_all }}</button>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" type="text/css" href="/catalog/view/javascript/jquery.datetimepicker.min.css"/ >
+<script src="/catalog/view/javascript/jquery.datetimepicker.full.min.js"></script>
+<script src="/admin/view/javascript/jquery/jq-ajax-progress.min.js"></script>
+<script type="text/javascript">
+
+  $('#input-sync-time').datetimepicker({
+    datepicker:false,
+    format:'H:i:00',
+    step: 15,
+    defaultTime:'04:00:00',
+    roundTime: 'floor',
+  });
+
+  $("body").on("click", ".save-settings", function() {
+    $.ajax({
+          type: 'post',
+          url: 'index.php?route=extension/module/trade_import/save_settings&user_token={{ userToken }}',
+          data: $('form input[type=\'text\'], form select, form textarea:not([name=json-text])'),
+          dataType: 'json',
+          beforeSend: function() {
+            console.log('Saving...');
+              },
+          success: function(json) {
+            $('.alert-dismissible, .text-danger').remove();
+            $('.form-group').removeClass('has-error');
+            if (json['error_code']) {
+              console.log('Saving failed');
+              $('#input-code').after('<div class="text-danger">' + json['error_code'] + '</div>');
+              $('.text-danger').parents(".form-group").addClass('has-error');
+            }
+            if (json['success']) {
+              console.log('Settings saved');
+              $('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+              $("body").append('<div class="alert alert-success alert-dismissible alert-fixed">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+              $(".save-popup").remove();
+              $("#next-schedule span").text(json['next_schedule']);
+              setTimeout(function() {
+                $('.alert-fixed').animate({opacity: 0}, 500, function() {
+                  $(this).remove();
+                });
+              }, 1500);
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          }
+    });
+  });
+
+  function formatBytes(a, b = 2) {
+    if (0 === a) return "0 Bytes";
+    const c = 0 > b ? 0 : b,
+        d = Math.floor(Math.log(a) / Math.log(1024));
+    return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+}
+
+
+  function debug_ajax(url, handler, handler_text) {
+    var text = [];
+    $.ajax({
+      type: 'get',
+      url: url+'&user_token={{ userToken }}',
+      beforeSend: function() {
+        console.log('Loading...');
+        $(handler).html('<div class="trade-import-debug-preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div><span>{{ text_loading }}</span>').prop('disabled', true);
+      },
+      chunking: true,
+      progress: function(e, part) {
+        $(handler).find('span').html(formatBytes(e.loaded));
+        if (typeof part !== 'undefined') {
+          if (part.length > 1500) {
+            part = part.substring(0, 1500) + "...\n";
+          }
+          text.unshift(part);
+          text.length = Math.min(15, text.length);
+        }
+        $("#input-group").val(text.join(""));
+        // console.log(e);
+        // if (e.lengthComputable) {
+        //   var percentage = (e.loaded * 100) / e.total;
+        //   console.log(percentage);
+        //   $progress.value = percentage;
+
+        //   if (percentage >= 100) {
+        //     // process completed
+        //   }
+        // }
+      },
+      success: function(data) {
+        console.log('Function loaded ' + data);
+        if (data.length > 2000000) {
+          $("#input-group").val("Data is too big to display, check development console");
+        } else {
+          $("#input-group").val(data);
+        }
+        $(handler).html(handler_text).prop('disabled', false);
+      }
+    });
+  }
+
+  $("#button-get-json").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/get_json', this, '{{ get_button }}');
+  });
+
+  $("#button-get-groups").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_groups', this, '{{ get_groups }}');
+  });
+
+  $("#button-get-nomenclatures").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_nomenclatures', this, '{{ get_nomenclatures }}');
+  });
+
+  $("#button-get-services").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_services', this, '{{ get_services }}');
+  });
+
+  $("#button-get-option-characteristic").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_option_characteristic', this, '{{ get_option_characteristic }}');
+  });
+
+  $("#button-get-stocks").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_stocks', this, '{{ get_stocks }}');
+  });
+
+  $("#button-get-filters").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_filters', this, '{{ get_filters }}');
+  });
+
+  $("#button-get-warehouses").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_warehouses', this, '{{ get_warehouses }}');
+  });
+
+  $("#button-get-prices").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/show_prices', this, '{{ get_prices }}');
+  });
+
+  $("#button-get-customer-groups").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/get_customer_groups', this, '{{ get_customer_groups }}');
+  });
+
+  $("#button-add-indexes").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/add_indexes', this, '{{ add_indexes }}');
+  });
+
+  $("#button-delete-images").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/delete_images', this, '{{ delete_images }}');
+    }
+  });
+
+  $("#button-delete-images-not-in-table").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/delete_images_not_in_table', this, '{{ delete_images_not_in_table }}');
+    }
+  });
+
+  $("#button-delete-images-table").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/delete_images_table', this, '{{ delete_images_table }}');
+    }
+  });
+
+  $("#button-get-images").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/get_images', this, '{{ get_images }}');
+  });
+
+  $("#button-cache-images").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/cache_images', this, '{{ cache_images }}');
+  });
+
+  $("#button-add-one-product").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/add_one_product', this, '{{ add_one_product }}');
+  });
+
+  $("#button-add-one-separate-product").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/add_one_separate_product', this, '{{ add_one_separate_product }}');
+  });
+
+  $("#button-clean-orders").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/clean_orders', this, '{{ clean_orders }}');
+    }
+  });
+
+  $("#button-clean-checks").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/clean_checks', this, '{{ clean_checks }}');
+    }
+  });
+
+  $("#button-clean-tables").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/clean_tables', this, '{{ clean_tables }}');
+      }
+  });
+
+  $("#button-clean-all").click(function() {
+    var c = confirm('{{ confirm_clean }}');
+    if (c == true) {
+      debug_ajax('index.php?route=extension/module/trade_import/clean_all', this, '{{ clean_all }}');
+    }
+  });
+
+  $("#button-show-orders").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/get_orders', this, '{{ get_orders }}');
+  });
+
+  $("#button-show-checks").click(function() {
+    debug_ajax('index.php?route=extension/module/trade_import/get_checks', this, '{{ get_checks }}');
+  });
+
+  $("#content > .container-fluid select, #content > .container-fluid input[type=text], #content > .container-fluid textarea:not(#input-group)").each(function() {
+    $(this).on("change", function() {
+      $(".save-popup").remove();
+      $(this).parent().append('<button type="button" data-toggle="tooltip" title="{{ button_save }}" class="save-popup save-settings btn btn-primary"><i class="fa fa-save"></i></button>');
+    });
+  });
+
+  $.ajax({
+    url: 'index.php?route=extension/module/trade_import/set_tables&user_token={{ userToken }}',
+    type: 'POST',
+    dataType: 'JSON',
+    beforeSend: function() {
+       $("#input-group").val('setting tables, please wait');
+      $('.trade-import-debug').prepend('<div class="trade-import-debug-preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>');
+    },
+    success: function(data) {
+      console.log('Function loaded');
+      var success;
+      if (data['success']) {
+        success = 'table set success'
+      } else {
+        success = 'table set failure';
+      }
+      $("#input-group").val(success);
+      console.log(success);
+      $('.trade-import-debug-preloader').remove();
+    }
+  });
+  
+</script>
+{{ footer }}

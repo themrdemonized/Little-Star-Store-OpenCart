@@ -1,0 +1,55 @@
+{{ header }}
+<div id="product-stocks-list" class="container">
+  {% if stocks %}
+    <ul class="breadcrumb">
+      {% for breadcrumb in breadcrumbs %}
+      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    {% if stocks %}
+      <div id="content" class="{{ class }}">{{ content_top }}
+        <div class="stocks-block product-block row">
+          {% for stock in stocks %}
+            <div class="col-sm-12">
+              <div class="stocks-stock">
+                <div class="flex-container mobile-block">
+                  {% if stock.image %}
+                    <div class="stocks-image"><img src="{{ stock.image }}" alt="{{ stock.name }}"></div>
+                  {% endif %}
+                  <div class="stocks-desc">
+                    <h2 class="header-3">{{ stock.name }}</h2>
+                    {% if stock.discount %}<p class="stocks-discount">{{ text_discount }} {{ stock.discount }}%</p>{% endif %}
+                    <p class="stocks-date subparagraph">{{ stock.date }}<p>
+                    <a href="{{ stock.href }}" class="btn btn-stock">{% if stock.discount %}{{ text_products }}{% else %}{{ text_product_list }}{% endif %}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="row">
+          <div class="col-sm-6 text-left stocks-pagination">{{ pagination }}</div>
+          <div class="col-sm-6 text-right stocks-results">{{ results }}</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-sm-12">
+        <p>{{ text_empty }}</p>
+        <div class="buttons">
+          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        </div>
+      </div>
+    {% endif %}
+    {{ content_bottom }}</div>
+  {{ column_right }}</div>
+</div>
+{{ footer }} 
